@@ -35,10 +35,10 @@ carries pseudonymous ids only.
 | Component | What it does | Where it lives | Proof |
 |---|---|---|---|
 | Sign-in & roles | Username + password (salted PBKDF2, lock-out after 5 failures) → one HttpOnly, SameSite=Strict session signed by the server; the console API and the v2 service both read it. Signed-out visitors go to `/login`; regulators land on their overview | `frontend/src/middleware.ts`, `api/auth.py`, `api_v2/users.py` | No session, or a forged role header: 401 on every `/api` call |
-| Console :3000 | Queue, case timeline with the probability trajectory, the case's graph, memory, SAR, approvals. Proxies `/api` → :8000 and `/v2` → :8100 | `frontend/`, `next.config.ts` | HHG-014's graph read live: 25 nodes, 24 edges |
+| Analyst console | Queue, case timeline with the probability trajectory, the case's graph, memory, SAR, approvals, the regulator view and Ask Sentinel — one application, one signed session | `frontend/`, `next.config.ts` | HHG-014's graph read live: 25 nodes, 24 edges |
 | Regulator view | Every investigation, examiner walkthrough, approval chain, change record, in-browser hash recomputation | `api_v2/static/regulator.html` | Exportable as a read-only file |
 | MCP tools | card_history, device_history, ring_components, investigate_alert, verify_audit. No raw GSQL, no writes | `api_v2/mcp_server.py` | Every call is an audit entry |
-| Runner · run.sh | One command per case or pack; `run.sh` starts the three services, warms the graph, runs and grades | `run.sh`, `sentinel/typologies/run.py` | Exit 2 if the graph is down; nothing written |
+| Investigation runner | Answers one alert or a whole case pack: validates, reads the graph, decides, writes the answer and the graph record, grades | `sentinel/typologies/run.py` | Exit 2 if the graph is down; nothing written |
 | **Ask Sentinel** | Plain-language Q&A over investigations, audit trails, the live graph, closed-case vectors, the change record, project docs and the person's own uploads; every claim cited | `api_v2/assistant.py`, `AskSentinel.tsx` | Analyst asking for the access log: "not found", needs `audit.all` |
 | Validate alert | Fields, timestamp, trigger type, ids; refuses with the reason | `run.py · validate_alert()` | 5 malformed alerts: 5 refused |
 | Batched graph read | Every device the card used in 35 days, in one GSQL call | `ty_devices_batch` | 373 queries → 15; 170 s → 17 s |
@@ -91,21 +91,22 @@ carries pseudonymous ids only.
 
 ---
 
-## 4. Deployment
+## 4. Deployment on AWS
 
-![Deployment](../img/medium-2-deployment.png)
+![Sentinel production deployment on AWS](../img/aws-deployment.png)
 
-![Run modes](../img/medium-10-deployment-run-modes.png)
+The console is served by **AWS Amplify**; the Sentinel API runs on **AWS EC2** behind nginx; TigerGraph Savanna and
+OpenAI are reached over HTTPS.
 
-| Mode | How it starts | Reads from | Writes | Used for |
-|---|---|---|---|---|
-| Whole app | `./run.sh start` → localhost:3000 | graph, run directory, answers | approvals, sign-ins, refusals, assistant questions into the chain | analysts, team leads, fraud managers, regulators |
-| Live | `python -m sentinel.typologies.run --pack … --out cases` | GRAPH_GOA | answer files, FraudCase write-back, audit chain | the case pack, drills, the demo |
-| Lab mirror | `--source lab` | `data/lab.duckdb` | answers labelled "mirror" | backtests, overfitting checks, parity (20 / 20) |
-| Rules only | `--no-model` | graph or mirror | tricky cases become uncertain + escalate | drills, ablation |
-| Onboard a bank | `./run.sh onboard propose \| build \| approve \| dryrun` | the bank's GSQL schema, then its graph | proposed / reviewed / approved mapping, capability report | bringing a new bank to the same detectors |
-| Investigate in a bank | `run --bank Bank_CoreT24 --pack …` | the bank's graph via its approved mapping | answer files, audit chain (no write-back: no Sentinel case vertex) | alerts at an onboarded bank |
-| Regulator snapshot | `scripts/export_regulator_snapshot.py` | one self-contained HTML file | nothing | an examiner who should not reach the bank's systems |
+| | |
+|---|---|
+| **Security** | TLS end to end (Let's Encrypt); nginx is the only public listener and the API is bound to localhost. The security group admits web traffic and certificate validation, SSH from one address. The API runs as a dedicated, unprivileged, sandboxed systemd service (read-only filesystem except its own state, no privilege escalation). Secrets in a root-owned file readable only by the service, never in instance user-data. Salted PBKDF2, lock-out, signed HttpOnly sessions, role-based access on every call, PII masked in logs |
+| **Reliability** | Fails closed: graph unreachable → the case stops and nothing is written; model call fails → escalated to a person. Liveness and readiness probes; restart on failure and stop after five failures a minute; graceful shutdown. Each release is import-checked while the old one still serves; the audit ledger, approvals and journal survive every redeploy. Idle TigerGraph workspaces are detected and waited for |
+| **Scalability** | Rings by label propagation and one batched read per case run inside TigerGraph (worst case 170 s → 17 s). Independent cases and append-only state scale by adding instances against the same graph. A new bank is a signed mapping, not new code |
+
+### Technology stack
+
+![Sentinel technology stack](../img/tech-stack.png)
 
 ---
 
@@ -121,7 +122,7 @@ carries pseudonymous ids only.
 | **Scalable** | Rings by label propagation inside TigerGraph; one batched read per case; stateless services, independent cases | Largest card 373 → 15 queries, 170 → 17 s | `sentinel_queries_v3.gsql` |
 | **Ask Sentinel: safe to ask** | Entitlement before ranking; untrusted text as quoted data; every claim cited, invalid citations removed | 0 withheld sources sent to the model; 8 tests | `api_v2/assistant.py` |
 | **Adaptable to any bank** | One canonical model; a bank is a reviewed, signed mapping, not new code; every name and path checked; unfed detectors switched off with the reason | ISO 20022, BIAN, T24: 79 / 79 after review, 0 wrong; same fraud found live in all three | `sentinel/onboarding/` |
-| **Easy to change** | A new pattern is one function in a registry; who may do what is one table; data and schema changes wait for a signed approval | One script runs it all: `./run.sh start · warmup · pack · test · onboard` | `detectors.py`, `rbac.py`, `run.sh` |
+| **Easy to change** | A new pattern is one function in a registry; who may do what is one table; data and schema changes wait for a signed approval | A new pattern, role or bank is one change in one place | `detectors.py`, `rbac.py`, `sentinel/onboarding/` |
 
 ---
 
@@ -166,7 +167,7 @@ is recorded instead of guessed:
 
 | | |
 |---|---|
-| Running it | [ROUND2_RUN.md](../ROUND2_RUN.md), `./run.sh help` |
+| The AWS deployment | [Deployment_Doc.md](../../deploy/Deployment_Doc.md) |
 | Onboarding a bank | [ONBOARDING.md](../ONBOARDING.md) |
 | Resilience | [RESILIENCE.md](../RESILIENCE.md) |
 | The innovation claim | [INNOVATION.md](../INNOVATION.md) |

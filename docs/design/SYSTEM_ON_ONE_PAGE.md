@@ -14,7 +14,7 @@ full design: [ARCHITECTURE.md](ARCHITECTURE.md)
 | Layer | What it holds |
 |---|---|
 | **People & inputs** | four roles; an MCP-speaking assistant; the alert feed |
-| **Front door :3000** | one sign-in and session for every service; the console; the regulator view; read-only MCP tools; the runner; Ask Sentinel |
+| **Front door** | one sign-in and session for the whole application; the console; the regulator view; read-only MCP tools; the runner; Ask Sentinel |
 | **Decision layer** | validate → one batched graph read → 8 detectors → history checks → rules → model (tricky cases only) → policy engine → containment → human approval → write-back with read-back |
 | **Bank-side stores** | private uploads, the hash-chained audit ledger, answer files, salted user store, the lab mirror (backtests only, never a silent fallback) |
 | **Outside the bank** | TigerGraph (the source of truth, plus each onboarded bank's own graph), OpenAI (pseudonymous ids only), bank onboarding |
