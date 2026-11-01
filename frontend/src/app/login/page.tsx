@@ -6,7 +6,7 @@
  * and the role inside it decides where the person lands and what every page lets them do.
  */
 
-import { Suspense, useState, type FormEvent } from "react";
+import { Suspense, useEffect, useState, type FormEvent } from "react";
 import { useSearchParams } from "next/navigation";
 
 const ROLES = [
@@ -20,6 +20,17 @@ function LoginForm() {
   const params = useSearchParams();
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+
+  // Already signed in: go home. The middleware does this too, but a cached copy of this page
+  // can be served without it, so the page checks for itself.
+  useEffect(() => {
+    fetch("/v2/me", { credentials: "same-origin" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((me) => {
+        if (me?.authenticated) window.location.replace(me.actor_role === "regulator" ? "/regulator" : "/");
+      })
+      .catch(() => undefined);
+  }, []);
 
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();

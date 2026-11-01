@@ -20,6 +20,7 @@ it was merely getting ready.
 from __future__ import annotations
 
 import logging
+import shutil
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
@@ -59,6 +60,30 @@ OPEN_PATHS = frozenset({"/api/health", "/api/meta", "/api/docs", "/api/openapi.j
 ALL_CONTROLLERS = (*CONTROLLERS, AuditController)
 
 
+#: The latest recorded run of each benchmark case, committed so a fresh deployment's console
+#: shows every case's timeline and probability trajectory (runs/ itself is not in git).
+DEMO_RUNS = Path(__file__).resolve().parents[2] / "demo" / "runs"
+
+
+def _seed_demo_traces(runs_dir: Path) -> int:
+    """Copy in demo traces for cases this deployment has no trace of. Never overwrites a run it made itself."""
+    if not DEMO_RUNS.is_dir():
+        return 0
+    have = {p.stem for p in Path(runs_dir).glob("*/trace/*.jsonl")}
+    copied = 0
+    for src in DEMO_RUNS.glob("*/trace/*.jsonl"):
+        if src.stem in have:
+            continue
+        dst = Path(runs_dir) / src.parent.parent.name / "trace" / src.name
+        try:
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(src, dst)
+            copied += 1
+        except OSError as exc:  # a read-only runs dir must not stop the API from starting
+            logger.warning("could not seed demo trace %s: %s", src.name, exc)
+    return copied
+
+
 def create_app(settings: Settings | None = None, *, container: Container | None = None) -> FastAPI:
     """Build the application.
 
@@ -72,6 +97,9 @@ def create_app(settings: Settings | None = None, *, container: Container | None 
 
     @asynccontextmanager
     async def lifespan(_: FastAPI) -> AsyncIterator[None]:
+        seeded = _seed_demo_traces(resolved.runs_dir)
+        if seeded:
+            logger.info("seeded %d demo case trace(s) into %s", seeded, resolved.runs_dir)
         owned = container is None
         built = container or await Container.build(resolved)
         handle.set(built)
