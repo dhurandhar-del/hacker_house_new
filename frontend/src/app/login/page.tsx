@@ -53,7 +53,7 @@ function LoginForm() {
   }
 
   return (
-    <form onSubmit={submit} className="grid gap-4 rounded-lg border border-border bg-surface p-6 shadow-2">
+    <form onSubmit={submit} method="post" className="grid gap-4 rounded-lg border border-border bg-surface p-6 shadow-2">
       <div className="grid gap-1">
         <h1 className="text-h2">Sign in</h1>
         <p className="text-small text-fg-muted">Use the account your fraud manager gave you. Your role decides what you see and can do.</p>

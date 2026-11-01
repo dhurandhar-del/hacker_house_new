@@ -458,7 +458,7 @@ export function AskSentinel() {
             )}
 
             {phase === "signin" && (
-              <form onSubmit={signIn} className="grid gap-3 rounded-lg border border-border bg-surface p-4">
+              <form onSubmit={signIn} method="post" className="grid gap-3 rounded-lg border border-border bg-surface p-4">
                 <div className="grid gap-1">
                   <b className="text-h3">Sign in to ask</b>
                   <p className="text-small text-fg-muted">
