@@ -11,7 +11,7 @@ anything, so the portal hiding a button is a convenience, never the control.
 Sign-ins, failures, lock-outs and refused requests are written to the audit
 ledger under the case id ``_access``.
 
-Reads one run directory (``SENTINEL_RUN_DIR``, default eval/out/regulator_demo):
+Reads one run directory (see api_v2/rundir.py; a fresh deployment is seeded from demo/regulator_run):
 ``cases/*.json``, ``audit/ledger.jsonl``, ``containment/*.json``. Without
 ``SENTINEL_AUTH_SECRET`` the service cannot sign sessions: sign-in and writes are
 refused, and reads run in a demo mode marked as such (the snapshot exporter
@@ -38,7 +38,9 @@ ROOT = Path(__file__).resolve().parents[2]
 from dotenv import load_dotenv  # noqa: E402
 
 load_dotenv(ROOT / ".env")
-RUN = Path(os.getenv("SENTINEL_RUN_DIR", str(ROOT / "eval" / "out" / "regulator_demo")))
+from api_v2 import rundir  # noqa: E402
+
+RUN = rundir.resolve()
 PACK = Path(os.getenv("SENTINEL_PACK", str(ROOT / "case_pack.csv")))
 STATIC = Path(__file__).with_name("static")
 COOKIE = "sentinel_session"
@@ -254,7 +256,8 @@ def queue(request: Request):
 def summary(request: Request):
     v = guard(request, "regulator.view")
     led = ledger()
-    entries = [e for e in led.entries() if e["case_id"] != ACCESS]
+    # Internal logs (_access, _assistant, _mcp) are not investigations.
+    entries = [e for e in led.entries() if not e["case_id"].startswith("_")]
     answers = _answers()
     ids = sorted({e["case_id"] for e in entries} | set(answers))
     rows = [_summary_row(i, answers.get(i), [e for e in entries if e["case_id"] == i]) for i in ids]
@@ -266,7 +269,7 @@ def summary(request: Request):
 def investigation(case_id: str, request: Request):
     v = guard(request, "case.view")
     ans = _answers().get(case_id)
-    entries = ledger().entries(case_id) if case_id != ACCESS else []
+    entries = ledger().entries(case_id) if not case_id.startswith("_") else []
     if not ans and not entries:
         raise HTTPException(404, f"no investigation {case_id}")
     cp = RUN / "containment" / f"{case_id}.json"

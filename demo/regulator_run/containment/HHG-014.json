@@ -1,0 +1,324 @@
+{
+ "ring": "shared_device_ring",
+ "shared": "D2c2006f554c8",
+ "as_of": "2016-11-22 20:11:00",
+ "cards": [
+  {
+   "card_id": "C13487-K1",
+   "customer_id": "C13487",
+   "ring_txn_ids": [
+    3460634,
+    3478561
+   ],
+   "ring_exposure": 187.33,
+   "own_spend_45d": 1119.24,
+   "own_txns_45d": 23,
+   "ring_share": 0.143,
+   "action": "BLOCK_CARD",
+   "reason": "stops $187.33 of ring activity (14% of the card's spend), more than the $100 cost of disrupting the cardholder",
+   "touches_customer": "C13487: block also stops 23 ordinary purchase(s) worth $1,119.24 in 45 days; reissue the card"
+  },
+  {
+   "card_id": "C01289-K1",
+   "customer_id": "C01289",
+   "ring_txn_ids": [
+    3467346
+   ],
+   "ring_exposure": 89.53,
+   "own_spend_45d": 410.84,
+   "own_txns_45d": 6,
+   "ring_share": 0.179,
+   "action": "MONITOR_CARD",
+   "reason": "ring exposure $89.53 does not justify disrupting a card used 6 times normally; watch for further ring activity",
+   "touches_customer": "C01289: monitored, no disruption"
+  },
+  {
+   "card_id": "C01996-K2",
+   "customer_id": "C01996",
+   "ring_txn_ids": [
+    3462447
+   ],
+   "ring_exposure": 225.36,
+   "own_spend_45d": 21581.34,
+   "own_txns_45d": 255,
+   "ring_share": 0.01,
+   "action": "BLOCK_CARD",
+   "reason": "stops $225.36 of ring activity (1% of the card's spend), more than the $100 cost of disrupting the cardholder",
+   "touches_customer": "C01996: block also stops 255 ordinary purchase(s) worth $21,581.34 in 45 days; reissue the card"
+  },
+  {
+   "card_id": "C02910-K1",
+   "customer_id": "C02910",
+   "ring_txn_ids": [
+    3468314
+   ],
+   "ring_exposure": 224.8,
+   "own_spend_45d": 4480.66,
+   "own_txns_45d": 22,
+   "ring_share": 0.048,
+   "action": "BLOCK_CARD",
+   "reason": "stops $224.80 of ring activity (5% of the card's spend), more than the $100 cost of disrupting the cardholder",
+   "touches_customer": "C02910: block also stops 22 ordinary purchase(s) worth $4,480.66 in 45 days; reissue the card"
+  },
+  {
+   "card_id": "C02975-K1",
+   "customer_id": "C02975",
+   "ring_txn_ids": [
+    3466014
+   ],
+   "ring_exposure": 36.12,
+   "own_spend_45d": 474.99,
+   "own_txns_45d": 4,
+   "ring_share": 0.071,
+   "action": "MONITOR_CARD",
+   "reason": "ring exposure $36.12 does not justify disrupting a card used 4 times normally; watch for further ring activity",
+   "touches_customer": "C02975: monitored, no disruption"
+  },
+  {
+   "card_id": "C03676-K2",
+   "customer_id": "C03676",
+   "ring_txn_ids": [
+    3477916
+   ],
+   "ring_exposure": 129.35,
+   "own_spend_45d": 17409.69,
+   "own_txns_45d": 135,
+   "ring_share": 0.007,
+   "action": "BLOCK_CARD",
+   "reason": "stops $129.35 of ring activity (1% of the card's spend), more than the $100 cost of disrupting the cardholder",
+   "touches_customer": "C03676: block also stops 135 ordinary purchase(s) worth $17,409.69 in 45 days; reissue the card"
+  },
+  {
+   "card_id": "C04108-K2",
+   "customer_id": "C04108",
+   "ring_txn_ids": [
+    3467635
+   ],
+   "ring_exposure": 162.35,
+   "own_spend_45d": 111377.15,
+   "own_txns_45d": 380,
+   "ring_share": 0.001,
+   "action": "BLOCK_CARD",
+   "reason": "stops $162.35 of ring activity (0% of the card's spend), more than the $100 cost of disrupting the cardholder",
+   "touches_customer": "C04108: block also stops 380 ordinary purchase(s) worth $111,377.15 in 45 days; reissue the card"
+  },
+  {
+   "card_id": "C04274-K1",
+   "customer_id": "C04274",
+   "ring_txn_ids": [
+    3468463,
+    3476202
+   ],
+   "ring_exposure": 365.23,
+   "own_spend_45d": 3499.04,
+   "own_txns_45d": 7,
+   "ring_share": 0.095,
+   "action": "BLOCK_CARD",
+   "reason": "stops $365.23 of ring activity (10% of the card's spend), more than the $100 cost of disrupting the cardholder",
+   "touches_customer": "C04274: block also stops 7 ordinary purchase(s) worth $3,499.04 in 45 days; reissue the card"
+  },
+  {
+   "card_id": "C05448-K2",
+   "customer_id": "C05448",
+   "ring_txn_ids": [
+    3478714
+   ],
+   "ring_exposure": 245.8,
+   "own_spend_45d": 1001.2,
+   "own_txns_45d": 8,
+   "ring_share": 0.197,
+   "action": "BLOCK_CARD",
+   "reason": "stops $245.80 of ring activity (20% of the card's spend), more than the $100 cost of disrupting the cardholder",
+   "touches_customer": "C05448: block also stops 8 ordinary purchase(s) worth $1,001.20 in 45 days; reissue the card"
+  },
+  {
+   "card_id": "C06710-K1",
+   "customer_id": "C06710",
+   "ring_txn_ids": [
+    3473057
+   ],
+   "ring_exposure": 184.19,
+   "own_spend_45d": 648.49,
+   "own_txns_45d": 7,
+   "ring_share": 0.221,
+   "action": "BLOCK_CARD",
+   "reason": "stops $184.19 of ring activity (22% of the card's spend), more than the $100 cost of disrupting the cardholder",
+   "touches_customer": "C06710: block also stops 7 ordinary purchase(s) worth $648.49 in 45 days; reissue the card"
+  },
+  {
+   "card_id": "C08168-K1",
+   "customer_id": "C08168",
+   "ring_txn_ids": [
+    3461032
+   ],
+   "ring_exposure": 129.94,
+   "own_spend_45d": 523.79,
+   "own_txns_45d": 13,
+   "ring_share": 0.199,
+   "action": "BLOCK_CARD",
+   "reason": "stops $129.94 of ring activity (20% of the card's spend), more than the $100 cost of disrupting the cardholder",
+   "touches_customer": "C08168: block also stops 13 ordinary purchase(s) worth $523.79 in 45 days; reissue the card"
+  },
+  {
+   "card_id": "C09049-K1",
+   "customer_id": "C09049",
+   "ring_txn_ids": [
+    3470763,
+    3473050
+   ],
+   "ring_exposure": 284.67,
+   "own_spend_45d": 771.84,
+   "own_txns_45d": 10,
+   "ring_share": 0.269,
+   "action": "BLOCK_CARD",
+   "reason": "stops $284.67 of ring activity (27% of the card's spend), more than the $100 cost of disrupting the cardholder",
+   "touches_customer": "C09049: block also stops 10 ordinary purchase(s) worth $771.84 in 45 days; reissue the card"
+  },
+  {
+   "card_id": "C09906-K1",
+   "customer_id": "C09906",
+   "ring_txn_ids": [
+    3469068,
+    3478133
+   ],
+   "ring_exposure": 361.41,
+   "own_spend_45d": 2106.07,
+   "own_txns_45d": 26,
+   "ring_share": 0.146,
+   "action": "BLOCK_CARD",
+   "reason": "stops $361.41 of ring activity (15% of the card's spend), more than the $100 cost of disrupting the cardholder",
+   "touches_customer": "C09906: block also stops 26 ordinary purchase(s) worth $2,106.07 in 45 days; reissue the card"
+  },
+  {
+   "card_id": "C09975-K1",
+   "customer_id": "C09975",
+   "ring_txn_ids": [
+    3463379
+   ],
+   "ring_exposure": 48.92,
+   "own_spend_45d": 11.0,
+   "own_txns_45d": 1,
+   "ring_share": 0.816,
+   "action": "BLOCK_CARD",
+   "reason": "stops $48.92 of ring activity (82% of the card's spend), more than the $100 cost of disrupting the cardholder",
+   "touches_customer": "C09975: block also stops 1 ordinary purchase(s) worth $11.00 in 45 days; reissue the card"
+  },
+  {
+   "card_id": "C10193-K2",
+   "customer_id": "C10193",
+   "ring_txn_ids": [
+    3467764
+   ],
+   "ring_exposure": 156.58,
+   "own_spend_45d": 9319.06,
+   "own_txns_45d": 88,
+   "ring_share": 0.017,
+   "action": "BLOCK_CARD",
+   "reason": "stops $156.58 of ring activity (2% of the card's spend), more than the $100 cost of disrupting the cardholder",
+   "touches_customer": "C10193: block also stops 88 ordinary purchase(s) worth $9,319.06 in 45 days; reissue the card"
+  },
+  {
+   "card_id": "C10326-K1",
+   "customer_id": "C10326",
+   "ring_txn_ids": [
+    3457285,
+    3457521
+   ],
+   "ring_exposure": 262.92,
+   "own_spend_45d": 883.59,
+   "own_txns_45d": 13,
+   "ring_share": 0.229,
+   "action": "BLOCK_CARD",
+   "reason": "stops $262.92 of ring activity (23% of the card's spend), more than the $100 cost of disrupting the cardholder",
+   "touches_customer": "C10326: block also stops 13 ordinary purchase(s) worth $883.59 in 45 days; reissue the card"
+  },
+  {
+   "card_id": "C11082-K1",
+   "customer_id": "C11082",
+   "ring_txn_ids": [
+    3474445
+   ],
+   "ring_exposure": 44.98,
+   "own_spend_45d": 2482.9,
+   "own_txns_45d": 12,
+   "ring_share": 0.018,
+   "action": "MONITOR_CARD",
+   "reason": "ring exposure $44.98 does not justify disrupting a card used 12 times normally; watch for further ring activity",
+   "touches_customer": "C11082: monitored, no disruption"
+  },
+  {
+   "card_id": "C11670-K2",
+   "customer_id": "C11670",
+   "ring_txn_ids": [
+    3467828,
+    3475406
+   ],
+   "ring_exposure": 334.42,
+   "own_spend_45d": 30362.92,
+   "own_txns_45d": 297,
+   "ring_share": 0.011,
+   "action": "BLOCK_CARD",
+   "reason": "stops $334.42 of ring activity (1% of the card's spend), more than the $100 cost of disrupting the cardholder",
+   "touches_customer": "C11670: block also stops 297 ordinary purchase(s) worth $30,362.92 in 45 days; reissue the card"
+  },
+  {
+   "card_id": "C12796-K1",
+   "customer_id": "C12796",
+   "ring_txn_ids": [
+    3468363
+   ],
+   "ring_exposure": 150.22,
+   "own_spend_45d": 4567.07,
+   "own_txns_45d": 14,
+   "ring_share": 0.032,
+   "action": "BLOCK_CARD",
+   "reason": "stops $150.22 of ring activity (3% of the card's spend), more than the $100 cost of disrupting the cardholder",
+   "touches_customer": "C12796: block also stops 14 ordinary purchase(s) worth $4,567.07 in 45 days; reissue the card"
+  },
+  {
+   "card_id": "C13291-K1",
+   "customer_id": "C13291",
+   "ring_txn_ids": [
+    3471032
+   ],
+   "ring_exposure": 154.02,
+   "own_spend_45d": 557.13,
+   "own_txns_45d": 6,
+   "ring_share": 0.217,
+   "action": "BLOCK_CARD",
+   "reason": "stops $154.02 of ring activity (22% of the card's spend), more than the $100 cost of disrupting the cardholder",
+   "touches_customer": "C13291: block also stops 6 ordinary purchase(s) worth $557.13 in 45 days; reissue the card"
+  }
+ ],
+ "total_ring_exposure": 3778.14,
+ "exposure_cut": 3607.51,
+ "coverage": 0.955,
+ "n_blocked": 17,
+ "n_monitored": 3,
+ "net_value": 1907.51,
+ "customers_disrupted": [
+  "C13487",
+  "C01996",
+  "C02910",
+  "C03676",
+  "C04108",
+  "C04274",
+  "C05448",
+  "C06710",
+  "C08168",
+  "C09049",
+  "C09906",
+  "C09975",
+  "C10193",
+  "C10326",
+  "C11670",
+  "C12796",
+  "C13291"
+ ],
+ "naive_block_all": {
+  "n_blocked": 20,
+  "exposure_cut": 3778.14,
+  "customers_disrupted": 20,
+  "net_value": 1778.14
+ }
+}

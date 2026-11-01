@@ -1,0 +1,117 @@
+{
+ "case_id": "HHG-011",
+ "case": {
+  "status": "closed_fraud",
+  "verdict": "fraud",
+  "fraud_probability": 0.95,
+  "pattern": "card_not_present_new_device",
+  "pattern_description": "",
+  "affected_txn_ids": [
+   "3583368"
+  ],
+  "first_suspicious_txn_id": "3583368",
+  "connected_card_ids": [],
+  "connected_device_profiles": [],
+  "exposure_usd": 131.3,
+  "evidence": [
+   {
+    "claim": "Not explained by the card's history — device_new: device D0d76295a5b1a not seen on this card before.",
+    "source": "graph",
+    "ref": "anomalies(card_id=C11923-K2, as_of=2016-12-29 06:27:44) on TigerGraph GRAPH_GOA (v3 queries ty_*)",
+    "entity_ids": [
+     "3583368"
+    ]
+   },
+   {
+    "claim": "Explained by the card's history: $131.30 is 4.6x the card's median $28.57, but the product (C) and e-mail (gmail.com) match the cardholder's history.",
+    "source": "graph",
+    "ref": "explain(card_id=C11923-K2, as_of=2016-12-29 06:27:44) on TigerGraph GRAPH_GOA (v3 queries ty_*)",
+    "entity_ids": [
+     "3583368"
+    ]
+   },
+   {
+    "claim": "Explained by the card's history: 3847 earlier purchases on this card were also made between midnight and 6am.",
+    "source": "graph",
+    "ref": "explain(card_id=C11923-K2, as_of=2016-12-29 06:27:44) on TigerGraph GRAPH_GOA (v3 queries ty_*)",
+    "entity_ids": [
+     "3583368"
+    ]
+   },
+   {
+    "claim": "Decision model (gpt-6-luna) assessed fraud at 0.95: P(fraud)=0.95, P(history explains)=0.00, P(coordinated)=0.00, P(evidence conflicts)=0.02",
+    "source": "external",
+    "ref": "adjudicator(model=gpt-6-luna, case=HHG-011)",
+    "entity_ids": [
+     "3583368",
+     "3576228",
+     "3576340",
+     "3576872",
+     "3577245",
+     "3577440",
+     "3577595",
+     "3578340",
+     "3578347",
+     "3578394",
+     "3578405",
+     "3580403",
+     "3580544",
+     "3581048",
+     "3583199",
+     "3583229"
+    ]
+   }
+  ],
+  "similar_prior_cases": [
+   "CC-4743",
+   "CC-0681",
+   "CC-4501",
+   "CC-1131",
+   "CC-3905",
+   "CC-0099"
+  ],
+  "summary": "Fraud (card_not_present_new_device) at 0.95, decided by rule_R2. customer denied the charge (R2)",
+  "written_to_graph": true,
+  "graph_case_id": "CASE-HHG-011"
+ },
+ "evidence_requests": [],
+ "next_best_actions": {
+  "initial": [
+   {
+    "action": "BLOCK_CARD",
+    "route": "L1",
+    "reason": "R2: cardholder denies the transaction"
+   },
+   {
+    "action": "CREATE_CASE",
+    "route": "auto",
+    "reason": "R2: cardholder denies the transaction"
+   }
+  ],
+  "final": [
+   {
+    "action": "BLOCK_CARD",
+    "route": "L1",
+    "reason": "R2: cardholder denies the transaction"
+   },
+   {
+    "action": "CREATE_CASE",
+    "route": "auto",
+    "reason": "R2: cardholder denies the transaction"
+   }
+  ],
+  "what_changed": "nothing"
+ },
+ "sar": {
+  "file": false,
+  "reason": "3a: no report. exposure $131.30 is at or below $1,000; the activity connects to no shared device profile, region cluster or other customer's fraud.",
+  "narrative": "",
+  "subjects": [],
+  "total_amount_usd": 0.0,
+  "activity_dates": []
+ },
+ "stop_reason": "Stopped once the decision was fraud (rule_R2); 3a: no report. exposure $131.30 is at or below $1,000; the activity connects to no shared device profile, region cluster or other customer's fraud.",
+ "tool_calls": 373,
+ "tokens": 6230,
+ "latency_s": 170.08
+}

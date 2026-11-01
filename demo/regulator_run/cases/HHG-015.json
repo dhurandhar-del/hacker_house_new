@@ -1,0 +1,113 @@
+{
+ "case_id": "HHG-015",
+ "case": {
+  "status": "escalated",
+  "verdict": "uncertain",
+  "fraud_probability": 0.69,
+  "pattern": "none",
+  "pattern_description": "",
+  "affected_txn_ids": [
+   "3464869"
+  ],
+  "first_suspicious_txn_id": "3464869",
+  "connected_card_ids": [],
+  "connected_device_profiles": [],
+  "exposure_usd": 599.94,
+  "evidence": [
+   {
+    "claim": "Not explained by the card's history — device_new: device Dfb7207e8ccbe not seen on this card before.",
+    "source": "graph",
+    "ref": "anomalies(card_id=C03042-K1, as_of=2016-11-17 19:03:36) on TigerGraph GRAPH_GOA (v3 queries ty_*)",
+    "entity_ids": [
+     "3464869"
+    ]
+   },
+   {
+    "claim": "Not explained by the card's history — region_new: billing region 327.0 new to the card.",
+    "source": "graph",
+    "ref": "anomalies(card_id=C03042-K1, as_of=2016-11-17 19:03:36) on TigerGraph GRAPH_GOA (v3 queries ty_*)",
+    "entity_ids": [
+     "3464869"
+    ]
+   },
+   {
+    "claim": "Explained by the card's history: $599.94 is 6.0x the card's median $99.96, but the product (R) and e-mail (anonymous.com) match the cardholder's history.",
+    "source": "graph",
+    "ref": "explain(card_id=C03042-K1, as_of=2016-11-17 19:03:36) on TigerGraph GRAPH_GOA (v3 queries ty_*)",
+    "entity_ids": [
+     "3464869"
+    ]
+   },
+   {
+    "claim": "Decision model (gpt-6-luna) assessed fraud at 0.81: P(fraud)=0.81, P(history explains)=0.05, P(coordinated)=0.12, P(evidence conflicts)=0.16",
+    "source": "external",
+    "ref": "adjudicator(model=gpt-6-luna, case=HHG-015)",
+    "entity_ids": [
+     "3464869"
+    ]
+   }
+  ],
+  "similar_prior_cases": [
+   "CC-3886",
+   "CC-0986",
+   "CC-1313",
+   "CC-2302",
+   "CC-0615",
+   "CC-1103"
+  ],
+  "summary": "Uncertain and escalated: decision model below the fraud floor; verify before acting (R1); P(fraud)=0.81, P(history explains)=0.05, P(coordinated)=0.12, P(evidence conflicts)=0.16",
+  "written_to_graph": true,
+  "graph_case_id": "CASE-HHG-015"
+ },
+ "evidence_requests": [
+  {
+   "type": "customer_validation",
+   "asked_after_step": 6,
+   "assumed_response": "Assumed: no reply from the cardholder within 24 hours. The evidence supports both readings, so no answer is assumed."
+  }
+ ],
+ "next_best_actions": {
+  "initial": [
+   {
+    "action": "CREATE_CASE",
+    "route": "auto",
+    "reason": "3a: a case is opened once fraud probability reaches 0.30 (assessed 0.69) or evidence has been requested"
+   },
+   {
+    "action": "ESCALATE_TO_ANALYST",
+    "route": "auto",
+    "reason": "R8: verdict is uncertain and the evidence conflicts"
+   }
+  ],
+  "final": [
+   {
+    "action": "MONITOR_CARD",
+    "route": "auto",
+    "reason": "R4: no reply within 24 hours"
+   },
+   {
+    "action": "ESCALATE_TO_ANALYST",
+    "route": "auto",
+    "reason": "R4: no reply and exposure $599.94 exceeds $500"
+   },
+   {
+    "action": "CREATE_CASE",
+    "route": "auto",
+    "reason": "3a: a case is opened once fraud probability reaches 0.30 (assessed 0.69) or evidence has been requested"
+   }
+  ],
+  "what_changed": "after the evidence request (assumed reply: no_reply), the recommendation moved from ['CREATE_CASE', 'ESCALATE_TO_ANALYST'] to ['MONITOR_CARD', 'ESCALATE_TO_ANALYST', 'CREATE_CASE']"
+ },
+ "sar": {
+  "file": false,
+  "reason": "3a: no report. fraud is neither confirmed nor strongly suspected (probability 0.69); exposure $599.94 is at or below $1,000; the activity connects to no shared device profile, region cluster or other customer's fraud.",
+  "narrative": "",
+  "subjects": [],
+  "total_amount_usd": 0.0,
+  "activity_dates": []
+ },
+ "stop_reason": "Stopped once the decision was uncertain (model); 3a: no report. fraud is neither confirmed nor strongly suspected (probability 0.69); exposure $599.94 is at or below $1,000; the activity connects to no shared device profile, region cluster or other customer's fraud.",
+ "tool_calls": 14,
+ "tokens": 5373,
+ "latency_s": 7.33
+}

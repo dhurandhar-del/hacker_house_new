@@ -1,0 +1,78 @@
+{
+ "case_id": "HHG-009",
+ "case": {
+  "status": "closed_fraud",
+  "verdict": "fraud",
+  "fraud_probability": 0.85,
+  "pattern": "card_not_present_fraud",
+  "pattern_description": "",
+  "affected_txn_ids": [
+   "3581141"
+  ],
+  "first_suspicious_txn_id": "3581141",
+  "connected_card_ids": [],
+  "connected_device_profiles": [],
+  "exposure_usd": 30.02,
+  "evidence": [
+   {
+    "claim": "Decision model (gpt-6-luna) assessed uncertain at 0.69: P(fraud)=0.78, P(history explains)=0.08, P(coordinated)=0.00, P(evidence conflicts)=0.10",
+    "source": "external",
+    "ref": "adjudicator(model=gpt-6-luna, case=HHG-009)",
+    "entity_ids": [
+     "3581141"
+    ]
+   }
+  ],
+  "similar_prior_cases": [
+   "CC-2026",
+   "CC-2020",
+   "CC-2228",
+   "CC-4938",
+   "CC-2032",
+   "CC-4585"
+  ],
+  "summary": "Fraud (card_not_present_fraud) at 0.85, decided by rule_R2. customer denied the charge (R2)",
+  "written_to_graph": true,
+  "graph_case_id": "CASE-HHG-009"
+ },
+ "evidence_requests": [],
+ "next_best_actions": {
+  "initial": [
+   {
+    "action": "BLOCK_CARD",
+    "route": "L1",
+    "reason": "R2: cardholder denies the transaction"
+   },
+   {
+    "action": "CREATE_CASE",
+    "route": "auto",
+    "reason": "R2: cardholder denies the transaction"
+   }
+  ],
+  "final": [
+   {
+    "action": "BLOCK_CARD",
+    "route": "L1",
+    "reason": "R2: cardholder denies the transaction"
+   },
+   {
+    "action": "CREATE_CASE",
+    "route": "auto",
+    "reason": "R2: cardholder denies the transaction"
+   }
+  ],
+  "what_changed": "nothing"
+ },
+ "sar": {
+  "file": false,
+  "reason": "3a: no report. exposure $30.02 is at or below $1,000; the activity connects to no shared device profile, region cluster or other customer's fraud.",
+  "narrative": "",
+  "subjects": [],
+  "total_amount_usd": 0.0,
+  "activity_dates": []
+ },
+ "stop_reason": "Stopped once the decision was fraud (rule_R2); 3a: no report. exposure $30.02 is at or below $1,000; the activity connects to no shared device profile, region cluster or other customer's fraud.",
+ "tool_calls": 9,
+ "tokens": 4783,
+ "latency_s": 10.5
+}

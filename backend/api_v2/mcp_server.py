@@ -32,7 +32,9 @@ from mcp.types import ToolAnnotations
 ROOT = Path(__file__).resolve().parents[2]
 load_dotenv(ROOT / ".env")
 PACK = Path(os.getenv("SENTINEL_PACK", str(ROOT / "case_pack.csv")))
-RUN = Path(os.getenv("SENTINEL_RUN_DIR", str(ROOT / "eval" / "out" / "regulator_demo")))
+from api_v2 import rundir  # noqa: E402
+
+RUN = rundir.resolve()
 READ_ONLY = ToolAnnotations(read_only_hint=True, destructive_hint=False, idempotent_hint=True, open_world_hint=False)
 
 CARD = re.compile(r"^C\d{5}-K\d{1,2}$")

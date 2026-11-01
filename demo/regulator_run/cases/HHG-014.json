@@ -1,0 +1,195 @@
+{
+ "case_id": "HHG-014",
+ "case": {
+  "status": "escalated",
+  "verdict": "fraud",
+  "fraud_probability": 0.97,
+  "pattern": "undocumented",
+  "pattern_description": "Device profile D2c2006f554c8, never seen on this account before 2016-11-15, made 2 online purchase(s) here; 19 other cards began using the same profile within 30 days, and 100% of its uses in that window were behind an anonymous proxy.",
+  "affected_txn_ids": [
+   "3460634",
+   "3478561"
+  ],
+  "first_suspicious_txn_id": "3460634",
+  "connected_card_ids": [
+   "C01289-K1",
+   "C01996-K2",
+   "C02910-K1",
+   "C02975-K1",
+   "C03676-K2",
+   "C04108-K2",
+   "C04274-K1",
+   "C05448-K2",
+   "C06710-K1",
+   "C08168-K1",
+   "C09049-K1",
+   "C09906-K1",
+   "C09975-K1",
+   "C10193-K2",
+   "C10326-K1",
+   "C11082-K1",
+   "C11670-K2",
+   "C12796-K1",
+   "C13291-K1"
+  ],
+  "connected_device_profiles": [
+   "D2c2006f554c8"
+  ],
+  "exposure_usd": 187.33,
+  "evidence": [
+   {
+    "claim": "Device profile D2c2006f554c8, never seen on this account before 2016-11-15, made 2 online purchase(s) here; 19 other cards began using the same profile within 30 days, and 100% of its uses in that window were behind an anonymous proxy.",
+    "source": "graph",
+    "ref": "detector:shared_device_ring(card_id=C13487-K1, as_of=2016-11-22 20:11:00) on TigerGraph GRAPH_GOA (v3 queries ty_*)",
+    "entity_ids": [
+     "3460634",
+     "3478561",
+     "C01289-K1",
+     "C01996-K2",
+     "C02910-K1",
+     "C02975-K1",
+     "C03676-K2",
+     "C04108-K2",
+     "C04274-K1",
+     "C05448-K2",
+     "C06710-K1",
+     "C08168-K1",
+     "C09049-K1",
+     "C09906-K1",
+     "C09975-K1",
+     "C10193-K2",
+     "C10326-K1",
+     "C11082-K1",
+     "C11670-K2",
+     "C12796-K1",
+     "C13291-K1"
+    ]
+   },
+   {
+    "claim": "Not explained by the card's history — device_new: device D2c2006f554c8 not seen on this card before.",
+    "source": "graph",
+    "ref": "anomalies(card_id=C13487-K1, as_of=2016-11-22 20:11:00) on TigerGraph GRAPH_GOA (v3 queries ty_*)",
+    "entity_ids": [
+     "3478561"
+    ]
+   },
+   {
+    "claim": "Not explained by the card's history — proxy: identity record shows IP_PROXY:ANONYMOUS.",
+    "source": "graph",
+    "ref": "anomalies(card_id=C13487-K1, as_of=2016-11-22 20:11:00) on TigerGraph GRAPH_GOA (v3 queries ty_*)",
+    "entity_ids": [
+     "3478561"
+    ]
+   },
+   {
+    "claim": "Not explained by the card's history — product_new: product C is 1% of the card's history.",
+    "source": "graph",
+    "ref": "anomalies(card_id=C13487-K1, as_of=2016-11-22 20:11:00) on TigerGraph GRAPH_GOA (v3 queries ty_*)",
+    "entity_ids": [
+     "3478561"
+    ]
+   }
+  ],
+  "similar_prior_cases": [],
+  "summary": "Fraud (undocumented) at 0.97, decided by typology. Device profile D2c2006f554c8, never seen on this account before 2016-11-15, made 2 online purchase(s) here; 19 other cards began using the same profile within 30 days, and 100% of its uses in that window were behind an anonymous proxy.",
+  "written_to_graph": true,
+  "graph_case_id": "CASE-HHG-014"
+ },
+ "evidence_requests": [
+  {
+   "type": "customer_validation",
+   "asked_after_step": 6,
+   "assumed_response": "Assumed: the cardholder, contacted on their registered number, does not recognise the transactions listed and still holds the card."
+  }
+ ],
+ "next_best_actions": {
+  "initial": [
+   {
+    "action": "CREATE_CASE",
+    "route": "auto",
+    "reason": "R6: several cards show fraud from a shared device profile"
+   },
+   {
+    "action": "MONITOR_CONNECTED_CARDS",
+    "route": "auto",
+    "reason": "R6: monitor every card sharing a shared device profile"
+   },
+   {
+    "action": "ESCALATE_TO_ANALYST",
+    "route": "auto",
+    "reason": "R9: undocumented pattern needs a human to characterise it"
+   },
+   {
+    "action": "VERIFY_WITH_CUSTOMER",
+    "route": "auto",
+    "reason": "the evidence puts this at 0.97 and the cardholder has not been asked; R2 and R3 both turn on their answer"
+   },
+   {
+    "action": "MONITOR_CARD",
+    "route": "auto",
+    "reason": "raise sensitivity while the cardholder is asked, at assessed probability 0.97"
+   },
+   {
+    "action": "FILE_REPORT",
+    "route": "L2",
+    "reason": "3a: fraud confirmed or strongly suspected and the activity connects to a shared device profile; the pattern is coordinated and undocumented (R9)."
+   }
+  ],
+  "final": [
+   {
+    "action": "BLOCK_CARD",
+    "route": "L1",
+    "reason": "R2: cardholder denies the transaction"
+   },
+   {
+    "action": "CREATE_CASE",
+    "route": "auto",
+    "reason": "R2: cardholder denies the transaction"
+   },
+   {
+    "action": "MONITOR_CONNECTED_CARDS",
+    "route": "auto",
+    "reason": "R6: monitor every card sharing a shared device profile"
+   },
+   {
+    "action": "ESCALATE_TO_ANALYST",
+    "route": "auto",
+    "reason": "R9: undocumented pattern needs a human to characterise it"
+   },
+   {
+    "action": "FILE_REPORT",
+    "route": "L2",
+    "reason": "3a: fraud confirmed or strongly suspected and the activity connects to a shared device profile; the pattern is coordinated and undocumented (R9)."
+   }
+  ],
+  "what_changed": "after the evidence request (assumed reply: denied), the recommendation moved from ['CREATE_CASE', 'MONITOR_CONNECTED_CARDS', 'ESCALATE_TO_ANALYST', 'VERIFY_WITH_CUSTOMER', 'MONITOR_CARD', 'FILE_REPORT'] to ['BLOCK_CARD', 'CREATE_CASE', 'MONITOR_CONNECTED_CARDS', 'ESCALATE_TO_ANALYST', 'FILE_REPORT']"
+ },
+ "sar": {
+  "file": true,
+  "reason": "3a: fraud confirmed or strongly suspected and the activity connects to a shared device profile; the pattern is coordinated and undocumented (R9).",
+  "narrative": "This report concerns card C13487-K1 held by customer C13487. Between 2016-11-15 and 2016-11-22, 2 transaction(s) totalling $187.33 were identified as fraudulent: 3460634, 3478561. The activity follows a pattern not covered by the bank's documented typologies: Device profile D2c2006f554c8, never seen on this account before 2016-11-15, made 2 online purchase(s) here; 19 other cards began using the same profile within 30 days, and 100% of its uses in that window were behind an anonymous proxy. The same activity links to 19 other card(s) through a shared device profile, including C01289-K1, C01996-K2, C02910-K1, C02975-K1, C03676-K2, C04108-K2. The first suspicious transaction was 3460634 on 2016-11-15 20:30. Policy section 3a requires this filing because the activity connects to a shared device profile; the pattern is coordinated and undocumented (R9). The card has been recommended for blocking and connected cards for monitoring. All transaction identifiers cited above exist in the bank's records and can be re-queried.",
+  "subjects": [
+   "C13487",
+   "C13487-K1",
+   "C01289-K1",
+   "C01996-K2",
+   "C02910-K1",
+   "C02975-K1",
+   "C03676-K2",
+   "C04108-K2",
+   "C04274-K1",
+   "C05448-K2",
+   "C06710-K1",
+   "C08168-K1"
+  ],
+  "total_amount_usd": 187.33,
+  "activity_dates": [
+   "2016-11-15",
+   "2016-11-22"
+  ]
+ },
+ "stop_reason": "Stopped once the decision was fraud (typology); 3a: fraud confirmed or strongly suspected and the activity connects to a shared device profile; the pattern is coordinated and undocumented (R9).",
+ "tool_calls": 3,
+ "tokens": 0,
+ "latency_s": 1.14
+}

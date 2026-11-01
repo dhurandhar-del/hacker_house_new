@@ -1,0 +1,147 @@
+{
+ "case_id": "HHG-006",
+ "case": {
+  "status": "escalated",
+  "verdict": "fraud",
+  "fraud_probability": 0.97,
+  "pattern": "undocumented",
+  "pattern_description": "4 online purchases within 30 minutes, each between $456.96 and $488.04 — just under a $500 authorisation threshold — totalling $1,906.07; the same burst ran on 3 other cards in the same three weeks. Amounts appear chosen to stay under the threshold.",
+  "affected_txn_ids": [
+   "3476602",
+   "3476633",
+   "3476665",
+   "3476682"
+  ],
+  "first_suspicious_txn_id": "3476602",
+  "connected_card_ids": [
+   "C00466-K1",
+   "C05851-K1",
+   "C10990-K1"
+  ],
+  "connected_device_profiles": [],
+  "exposure_usd": 1906.07,
+  "evidence": [
+   {
+    "claim": "4 online purchases within 30 minutes, each between $456.96 and $488.04 — just under a $500 authorisation threshold — totalling $1,906.07; the same burst ran on 3 other cards in the same three weeks. Amounts appear chosen to stay under the threshold.",
+    "source": "graph",
+    "ref": "detector:structuring_under_threshold(card_id=C07297-K1, as_of=2016-11-22 02:30:00) on TigerGraph GRAPH_GOA (v3 queries ty_*)",
+    "entity_ids": [
+     "3476602",
+     "3476633",
+     "3476665",
+     "3476682",
+     "C00466-K1",
+     "C05851-K1",
+     "C10990-K1"
+    ]
+   },
+   {
+    "claim": "Not explained by the card's history — device_new: device D4936ab359677 not seen on this card before.",
+    "source": "graph",
+    "ref": "anomalies(card_id=C07297-K1, as_of=2016-11-22 02:30:00) on TigerGraph GRAPH_GOA (v3 queries ty_*)",
+    "entity_ids": [
+     "3476682"
+    ]
+   },
+   {
+    "claim": "Not explained by the card's history — amount_high: $482.12 vs median $62.93, p95 $456.96.",
+    "source": "graph",
+    "ref": "anomalies(card_id=C07297-K1, as_of=2016-11-22 02:30:00) on TigerGraph GRAPH_GOA (v3 queries ty_*)",
+    "entity_ids": [
+     "3476682"
+    ]
+   },
+   {
+    "claim": "Not explained by the card's history — product_new: product C is 2% of the card's history.",
+    "source": "graph",
+    "ref": "anomalies(card_id=C07297-K1, as_of=2016-11-22 02:30:00) on TigerGraph GRAPH_GOA (v3 queries ty_*)",
+    "entity_ids": [
+     "3476682"
+    ]
+   }
+  ],
+  "similar_prior_cases": [],
+  "summary": "Fraud (undocumented) at 0.97, decided by typology. 4 online purchases within 30 minutes, each between $456.96 and $488.04 — just under a $500 authorisation threshold — totalling $1,906.07; the same burst ran on 3 other cards in the same three weeks. Amounts appear chosen to stay under the threshold.",
+  "written_to_graph": true,
+  "graph_case_id": "CASE-HHG-006"
+ },
+ "evidence_requests": [],
+ "next_best_actions": {
+  "initial": [
+   {
+    "action": "BLOCK_CARD",
+    "route": "L1",
+    "reason": "R2: cardholder denies the transaction"
+   },
+   {
+    "action": "CREATE_CASE",
+    "route": "auto",
+    "reason": "R2: cardholder denies the transaction"
+   },
+   {
+    "action": "MONITOR_CONNECTED_CARDS",
+    "route": "auto",
+    "reason": "R6: monitor every card sharing the same structured burst on other cards"
+   },
+   {
+    "action": "ESCALATE_TO_ANALYST",
+    "route": "auto",
+    "reason": "R9: undocumented pattern needs a human to characterise it"
+   },
+   {
+    "action": "FILE_REPORT",
+    "route": "L2",
+    "reason": "3a: fraud confirmed or strongly suspected and exposure $1,906.07 exceeds $1,000; the activity connects to the same structured burst on other cards; the pattern is coordinated and undocumented (R9)."
+   }
+  ],
+  "final": [
+   {
+    "action": "BLOCK_CARD",
+    "route": "L1",
+    "reason": "R2: cardholder denies the transaction"
+   },
+   {
+    "action": "CREATE_CASE",
+    "route": "auto",
+    "reason": "R2: cardholder denies the transaction"
+   },
+   {
+    "action": "MONITOR_CONNECTED_CARDS",
+    "route": "auto",
+    "reason": "R6: monitor every card sharing the same structured burst on other cards"
+   },
+   {
+    "action": "ESCALATE_TO_ANALYST",
+    "route": "auto",
+    "reason": "R9: undocumented pattern needs a human to characterise it"
+   },
+   {
+    "action": "FILE_REPORT",
+    "route": "L2",
+    "reason": "3a: fraud confirmed or strongly suspected and exposure $1,906.07 exceeds $1,000; the activity connects to the same structured burst on other cards; the pattern is coordinated and undocumented (R9)."
+   }
+  ],
+  "what_changed": "nothing"
+ },
+ "sar": {
+  "file": true,
+  "reason": "3a: fraud confirmed or strongly suspected and exposure $1,906.07 exceeds $1,000; the activity connects to the same structured burst on other cards; the pattern is coordinated and undocumented (R9).",
+  "narrative": "This report concerns card C07297-K1 held by customer C07297. Between 2016-11-21 and 2016-11-21, 4 transaction(s) totalling $1,906.07 were identified as fraudulent: 3476602, 3476633, 3476665, 3476682. The activity follows a pattern not covered by the bank's documented typologies: 4 online purchases within 30 minutes, each between $456.96 and $488.04 — just under a $500 authorisation threshold — totalling $1,906.07; the same burst ran on 3 other cards in the same three weeks. Amounts appear chosen to stay under the threshold. The same activity links to 3 other card(s) through the same structured burst on other cards, including C00466-K1, C05851-K1, C10990-K1. The first suspicious transaction was 3476602 on 2016-11-21 20:00. Policy section 3a requires this filing because exposure $1,906.07 exceeds $1,000; the activity connects to the same structured burst on other cards; the pattern is coordinated and undocumented (R9). The card has been recommended for blocking and connected cards for monitoring. All transaction identifiers cited above exist in the bank's records and can be re-queried.",
+  "subjects": [
+   "C07297",
+   "C07297-K1",
+   "C00466-K1",
+   "C05851-K1",
+   "C10990-K1"
+  ],
+  "total_amount_usd": 1906.07,
+  "activity_dates": [
+   "2016-11-21",
+   "2016-11-21"
+  ]
+ },
+ "stop_reason": "Stopped once the decision was fraud (typology); 3a: fraud confirmed or strongly suspected and exposure $1,906.07 exceeds $1,000; the activity connects to the same structured burst on other cards; the pattern is coordinated and undocumented (R9).",
+ "tool_calls": 3,
+ "tokens": 0,
+ "latency_s": 3.87
+}

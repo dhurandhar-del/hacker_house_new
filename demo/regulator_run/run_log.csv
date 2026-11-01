@@ -1,0 +1,21 @@
+case_id,started_at,source,latency_s,graph_queries,model_calls,model_tokens,model,decided_by,verdict,fraud_probability
+HHG-001,2026-10-30T00:52:35,TigerGraph GRAPH_GOA (v3 queries ty_*),37.85,7,0,0,,explained,legitimate,0.08
+HHG-002,2026-10-30T00:53:15,TigerGraph GRAPH_GOA (v3 queries ty_*),3.02,5,0,0,,explained,legitimate,0.08
+HHG-003,2026-10-30T00:53:21,TigerGraph GRAPH_GOA (v3 queries ty_*),5.39,5,1,5059,gpt-6-luna,rule_R2,fraud,0.92
+HHG-004,2026-10-30T00:53:30,TigerGraph GRAPH_GOA (v3 queries ty_*),14.09,29,1,5444,gpt-6-luna,rule_R7,legitimate,0.25
+HHG-005,2026-10-30T00:53:46,TigerGraph GRAPH_GOA (v3 queries ty_*),4.98,10,0,0,,rule_R1_weak_single,legitimate,0.15
+HHG-006,2026-10-30T00:53:56,TigerGraph GRAPH_GOA (v3 queries ty_*),3.87,3,0,0,,typology,fraud,0.97
+HHG-007,2026-10-30T00:54:04,TigerGraph GRAPH_GOA (v3 queries ty_*),10.33,19,0,0,,explained,legitimate,0.08
+HHG-008,2026-10-30T00:54:18,TigerGraph GRAPH_GOA (v3 queries ty_*),33.52,59,1,5178,gpt-6-luna,rule_R2,fraud,0.85
+HHG-009,2026-10-30T00:54:55,TigerGraph GRAPH_GOA (v3 queries ty_*),10.5,9,1,4783,gpt-6-luna,rule_R2,fraud,0.85
+HHG-010,2026-10-30T00:55:09,TigerGraph GRAPH_GOA (v3 queries ty_*),5.22,11,0,0,,rule_R1_weak_single,legitimate,0.15
+HHG-011,2026-10-30T00:55:17,TigerGraph GRAPH_GOA (v3 queries ty_*),170.08,373,1,6230,gpt-6-luna,rule_R2,fraud,0.95
+HHG-012,2026-10-30T00:58:11,TigerGraph GRAPH_GOA (v3 queries ty_*),6.2,11,0,0,,explained,legitimate,0.08
+HHG-013,2026-10-30T00:58:20,TigerGraph GRAPH_GOA (v3 queries ty_*),7.61,12,0,0,,rule_R1_weak_single,legitimate,0.15
+HHG-014,2026-10-30T00:58:30,TigerGraph GRAPH_GOA (v3 queries ty_*),1.14,3,0,0,,typology,fraud,0.97
+HHG-015,2026-10-30T00:58:46,TigerGraph GRAPH_GOA (v3 queries ty_*),7.33,14,1,5373,gpt-6-luna,model,uncertain,0.69
+HHG-016,2026-10-30T00:58:57,TigerGraph GRAPH_GOA (v3 queries ty_*),4.82,8,1,4637,gpt-6-luna,rule_R2,fraud,0.85
+HHG-017,2026-10-30T00:59:05,TigerGraph GRAPH_GOA (v3 queries ty_*),14.29,8,1,4648,gpt-6-luna,model,uncertain,0.3
+HHG-018,2026-10-30T00:59:23,TigerGraph GRAPH_GOA (v3 queries ty_*),21.74,40,1,5311,gpt-6-luna,rule_R2,fraud,0.98
+HHG-019,2026-10-30T00:59:48,TigerGraph GRAPH_GOA (v3 queries ty_*),8.66,12,1,5034,gpt-6-luna,model,uncertain,0.45
+HHG-020,2026-10-30T01:00:00,TigerGraph GRAPH_GOA (v3 queries ty_*),7.85,9,0,0,,rule_R1_weak_single,legitimate,0.15

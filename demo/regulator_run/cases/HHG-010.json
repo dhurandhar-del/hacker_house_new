@@ -1,0 +1,90 @@
+{
+ "case_id": "HHG-010",
+ "case": {
+  "status": "closed_legitimate",
+  "verdict": "legitimate",
+  "fraud_probability": 0.15,
+  "pattern": "none",
+  "pattern_description": "",
+  "affected_txn_ids": [],
+  "first_suspicious_txn_id": "",
+  "connected_card_ids": [],
+  "connected_device_profiles": [],
+  "exposure_usd": 0,
+  "evidence": [
+   {
+    "claim": "Not explained by the card's history — device_new: device D0e83f0a61762 not seen on this card before.",
+    "source": "graph",
+    "ref": "anomalies(card_id=C10434-K1, as_of=2016-12-02 18:18:27) on TigerGraph GRAPH_GOA (v3 queries ty_*)",
+    "entity_ids": [
+     "3506725"
+    ]
+   },
+   {
+    "claim": "Explained by the card's history: $1,000.03 is 14.5x the card's median $68.98, but the product (R) and e-mail (anonymous.com) match the cardholder's history.",
+    "source": "graph",
+    "ref": "explain(card_id=C10434-K1, as_of=2016-12-02 18:18:27) on TigerGraph GRAPH_GOA (v3 queries ty_*)",
+    "entity_ids": [
+     "3506725"
+    ]
+   }
+  ],
+  "similar_prior_cases": [
+   "CC-0873",
+   "CC-0986",
+   "CC-5583",
+   "CC-0635",
+   "CC-5558",
+   "CC-0991"
+  ],
+  "summary": "Legitimate: $1,000.03 is 14.5x the card's median $68.98, but the product (R) and e-mail (anonymous.com) match the cardholder's history",
+  "written_to_graph": true,
+  "graph_case_id": "CASE-HHG-010"
+ },
+ "evidence_requests": [
+  {
+   "type": "customer_validation",
+   "asked_after_step": 6,
+   "assumed_response": "Assumed: the cardholder confirms the purchase as their own; this matches what the card's history already shows."
+  }
+ ],
+ "next_best_actions": {
+  "initial": [
+   {
+    "action": "VERIFY_WITH_CUSTOMER",
+    "route": "auto",
+    "reason": "R1: the case rests on a single signal and assessed probability 0.15 is below 0.70, so verify before any block"
+   },
+   {
+    "action": "CLOSE_NO_FRAUD",
+    "route": "auto",
+    "reason": "assessed probability 0.15 with no supporting evidence found"
+   }
+  ],
+  "final": [
+   {
+    "action": "CLOSE_NO_FRAUD",
+    "route": "auto",
+    "reason": "R3: cardholder confirms the transaction"
+   },
+   {
+    "action": "CREATE_CASE",
+    "route": "auto",
+    "reason": "3a: a case is opened once fraud probability reaches 0.30 (assessed 0.15) or evidence has been requested"
+   }
+  ],
+  "what_changed": "after the evidence request (assumed reply: confirmed), the recommendation moved from ['VERIFY_WITH_CUSTOMER', 'CLOSE_NO_FRAUD'] to ['CLOSE_NO_FRAUD', 'CREATE_CASE']"
+ },
+ "sar": {
+  "file": false,
+  "reason": "3a: no report. fraud is neither confirmed nor strongly suspected (probability 0.15); exposure $0.00 is at or below $1,000; the activity connects to no shared device profile, region cluster or other customer's fraud.",
+  "narrative": "",
+  "subjects": [],
+  "total_amount_usd": 0.0,
+  "activity_dates": []
+ },
+ "stop_reason": "Stopped once the decision was legitimate (rule_R1_weak_single); 3a: no report. fraud is neither confirmed nor strongly suspected (probability 0.15); exposure $0.00 is at or below $1,000; the activity connects to no shared device profile, region cluster or other customer's fraud.",
+ "tool_calls": 11,
+ "tokens": 0,
+ "latency_s": 5.22
+}

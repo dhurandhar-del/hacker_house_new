@@ -1,0 +1,84 @@
+{
+ "case_id": "HHG-008",
+ "case": {
+  "status": "closed_fraud",
+  "verdict": "fraud",
+  "fraud_probability": 0.85,
+  "pattern": "card_not_present_fraud",
+  "pattern_description": "",
+  "affected_txn_ids": [
+   "3558054"
+  ],
+  "first_suspicious_txn_id": "3558054",
+  "connected_card_ids": [],
+  "connected_device_profiles": [],
+  "exposure_usd": 55.68,
+  "evidence": [
+   {
+    "claim": "Decision model (gpt-6-luna) assessed fraud at 0.85: P(fraud)=0.85, P(history explains)=0.65, P(coordinated)=0.00, P(evidence conflicts)=0.01",
+    "source": "external",
+    "ref": "adjudicator(model=gpt-6-luna, case=HHG-008)",
+    "entity_ids": [
+     "3558054",
+     "3550100",
+     "3551412",
+     "3553223",
+     "3553269",
+     "3553281",
+     "3554683"
+    ]
+   }
+  ],
+  "similar_prior_cases": [
+   "CC-5010",
+   "CC-3096",
+   "CC-4819",
+   "CC-1115",
+   "CC-4485",
+   "CC-0099"
+  ],
+  "summary": "Fraud (card_not_present_fraud) at 0.85, decided by rule_R2. customer denied the charge (R2)",
+  "written_to_graph": true,
+  "graph_case_id": "CASE-HHG-008"
+ },
+ "evidence_requests": [],
+ "next_best_actions": {
+  "initial": [
+   {
+    "action": "BLOCK_CARD",
+    "route": "L1",
+    "reason": "R2: cardholder denies the transaction"
+   },
+   {
+    "action": "CREATE_CASE",
+    "route": "auto",
+    "reason": "R2: cardholder denies the transaction"
+   }
+  ],
+  "final": [
+   {
+    "action": "BLOCK_CARD",
+    "route": "L1",
+    "reason": "R2: cardholder denies the transaction"
+   },
+   {
+    "action": "CREATE_CASE",
+    "route": "auto",
+    "reason": "R2: cardholder denies the transaction"
+   }
+  ],
+  "what_changed": "nothing"
+ },
+ "sar": {
+  "file": false,
+  "reason": "3a: no report. exposure $55.68 is at or below $1,000; the activity connects to no shared device profile, region cluster or other customer's fraud.",
+  "narrative": "",
+  "subjects": [],
+  "total_amount_usd": 0.0,
+  "activity_dates": []
+ },
+ "stop_reason": "Stopped once the decision was fraud (rule_R2); 3a: no report. exposure $55.68 is at or below $1,000; the activity connects to no shared device profile, region cluster or other customer's fraud.",
+ "tool_calls": 59,
+ "tokens": 5178,
+ "latency_s": 33.52
+}

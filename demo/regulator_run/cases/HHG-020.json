@@ -1,0 +1,85 @@
+{
+ "case_id": "HHG-020",
+ "case": {
+  "status": "closed_legitimate",
+  "verdict": "legitimate",
+  "fraud_probability": 0.15,
+  "pattern": "none",
+  "pattern_description": "",
+  "affected_txn_ids": [],
+  "first_suspicious_txn_id": "",
+  "connected_card_ids": [],
+  "connected_device_profiles": [],
+  "exposure_usd": 0,
+  "evidence": [
+   {
+    "claim": "Not explained by the card's history — device_new: device D052dae2f461a not seen on this card before.",
+    "source": "graph",
+    "ref": "anomalies(card_id=C12265-K2, as_of=2016-12-03 12:04:26) on TigerGraph GRAPH_GOA (v3 queries ty_*)",
+    "entity_ids": [
+     "3509359"
+    ]
+   },
+   {
+    "claim": "Not explained by the card's history — product_new: product R is 0% of the card's history.",
+    "source": "graph",
+    "ref": "anomalies(card_id=C12265-K2, as_of=2016-12-03 12:04:26) on TigerGraph GRAPH_GOA (v3 queries ty_*)",
+    "entity_ids": [
+     "3509359"
+    ]
+   }
+  ],
+  "similar_prior_cases": [
+   "CC-2447",
+   "CC-0098",
+   "CC-2277",
+   "CC-0635",
+   "CC-5580",
+   "CC-0099"
+  ],
+  "summary": "Legitimate: R1: a single score-raised charge resting only on weak signals (device_new, product_new); no typology, no proxy, no device new to the bank, no further charges — the bank cleared every such alert in its history",
+  "written_to_graph": true,
+  "graph_case_id": "CASE-HHG-020"
+ },
+ "evidence_requests": [
+  {
+   "type": "customer_validation",
+   "asked_after_step": 6,
+   "assumed_response": "Assumed: the cardholder confirms the purchase as their own; this matches what the card's history already shows."
+  }
+ ],
+ "next_best_actions": {
+  "initial": [
+   {
+    "action": "CLOSE_NO_FRAUD",
+    "route": "auto",
+    "reason": "assessed probability 0.15 with no supporting evidence found"
+   }
+  ],
+  "final": [
+   {
+    "action": "CLOSE_NO_FRAUD",
+    "route": "auto",
+    "reason": "R3: cardholder confirms the transaction"
+   },
+   {
+    "action": "CREATE_CASE",
+    "route": "auto",
+    "reason": "3a: a case is opened once fraud probability reaches 0.30 (assessed 0.15) or evidence has been requested"
+   }
+  ],
+  "what_changed": "after the evidence request (assumed reply: confirmed), the recommendation moved from ['CLOSE_NO_FRAUD'] to ['CLOSE_NO_FRAUD', 'CREATE_CASE']"
+ },
+ "sar": {
+  "file": false,
+  "reason": "3a: no report. fraud is neither confirmed nor strongly suspected (probability 0.15); exposure $0.00 is at or below $1,000; the activity connects to no shared device profile, region cluster or other customer's fraud.",
+  "narrative": "",
+  "subjects": [],
+  "total_amount_usd": 0.0,
+  "activity_dates": []
+ },
+ "stop_reason": "Stopped once the decision was legitimate (rule_R1_weak_single); 3a: no report. fraud is neither confirmed nor strongly suspected (probability 0.15); exposure $0.00 is at or below $1,000; the activity connects to no shared device profile, region cluster or other customer's fraud.",
+ "tool_calls": 9,
+ "tokens": 0,
+ "latency_s": 7.85
+}
