@@ -181,6 +181,13 @@ report-filing threshold. If the call fails, the case becomes *uncertain, escalat
 alert text is normalised and quoted as untrusted, so there is nothing for an injected instruction to steer except five
 numbers that are checked against the evidence: **0 of 36 defended runs flipped.**
 
+### AI guardrails and security, end to end
+
+Built bank-first: every model call passes five guarded stages — untrusted input, entitlement before retrieval, a
+narrow tool-less model, gated and citation-checked output, and a person who approves — on a hardened platform.
+
+![AI guardrails and security](docs/img/ai-guardrails.png)
+
 ---
 
 ## Bring any bank's graph
@@ -193,6 +200,8 @@ but isn't. Sentinel's detectors read a narrow canonical model instead, and a new
 bound to the mapping's hash) → **run** the unchanged detectors on the bank's own graph. A detector a bank cannot feed
 is switched off with the reason. Measured on three schemas built with traps: **79 / 79 right after review, 0 wrong**,
 the same fraud found live in all three. Detail: [docs/ONBOARDING.md](docs/ONBOARDING.md).
+
+![Any bank's schema, the same detectors](docs/img/schema-adaptability.png)
 
 ---
 

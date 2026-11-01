@@ -83,6 +83,10 @@ carries pseudonymous ids only.
 
 ![Onboarding a Temenos T24 bank](../img/medium-8-flow-onboarding.png)
 
+**Across banks** — three unrelated schemas, one canonical model, the same detectors:
+
+![Any bank's schema, the same detectors](../img/schema-adaptability.png)
+
 ---
 
 ## 3. Low-level design: classes
@@ -103,6 +107,10 @@ OpenAI are reached over HTTPS.
 | **Security** | TLS end to end (Let's Encrypt); nginx is the only public listener and the API is bound to localhost. The security group admits web traffic and certificate validation, SSH from one address. The API runs as a dedicated, unprivileged, sandboxed systemd service (read-only filesystem except its own state, no privilege escalation). Secrets in a root-owned file readable only by the service, never in instance user-data. Salted PBKDF2, lock-out, signed HttpOnly sessions, role-based access on every call, PII masked in logs |
 | **Reliability** | Fails closed: graph unreachable → the case stops and nothing is written; model call fails → escalated to a person. Liveness and readiness probes; restart on failure and stop after five failures a minute; graceful shutdown. Each release is import-checked while the old one still serves; the audit ledger, approvals and journal survive every redeploy. Idle TigerGraph workspaces are detected and waited for |
 | **Scalability** | Rings by label propagation and one batched read per case run inside TigerGraph (worst case 170 s → 17 s). Independent cases and append-only state scale by adding instances against the same graph. A new bank is a signed mapping, not new code |
+
+### AI guardrails and security
+
+![AI guardrails and security](../img/ai-guardrails.png)
 
 ### Technology stack
 
