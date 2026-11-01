@@ -9,63 +9,7 @@ Interactive version (click any box for what it does and where it lives):
 [claude.ai/artifact/JYEWEZyCDC1yXwjtYhPzCC](https://claude.ai/artifact/JYEWEZyCDC1yXwjtYhPzCC) ·
 full design: [ARCHITECTURE.md](ARCHITECTURE.md)
 
-```mermaid
-flowchart LR
-  subgraph IN["People & inputs"]
-    P["👥 People<br/>analyst · team lead<br/>fraud manager · regulator"]
-    MC["🔌 MCP client"]
-    AF["📄 Alert feed<br/>case pack, risk model"]
-  end
-
-  subgraph BANK["Bank boundary"]
-    direction LR
-    subgraph FRONT["Front door :3000"]
-      SI["🔒 Sign-in & roles<br/>one session for all"]
-      CO["🖥️ Console<br/>queue · timeline · graph"]
-      RV["👁️ Regulator view<br/>read-only · verifies chain"]
-      MT["🔌 MCP tools<br/>5 read-only"]
-      RU["▶️ Runner · run.sh<br/>case · pack · grade"]
-      ASK["💬 Ask Sentinel — NEW<br/>role-scoped GraphRAG Q&A<br/>cited · 3 guardrails"]
-    end
-    subgraph DL["Decision layer · sentinel.typologies"]
-      VA["✔ Validate alert"] --> BR["▤ Batched graph read"] --> DT["◎ 8 detectors + rings"] --> HC["🕒 History checks"]
-      HC --> RL["◆ Rules<br/>typology · R2 · R1 · R7"]
-      RL -- tricky only --> MG["▣ Model gate"]
-      RL --> PE["📋 Policy engine"]
-      MG --> PE --> CP["🛡 Containment"]
-      CP -- L1/L2 requests --> AP["🖊 Approval chain"] --> WB["⟲ Write-back & read-back"]
-    end
-    subgraph ST["Bank-side stores"]
-      UP["Your uploads<br/>private per person"]
-      LG["⛓ Audit ledger<br/>hash-chained"]
-      AFL["Answer files"]
-      US["🔑 User store"]
-      MI["Lab mirror<br/>backtests only"]
-    end
-  end
-
-  subgraph OUT["Outside the bank"]
-    TG[("TigerGraph Savanna 4.x<br/>GRAPH_GOA · 36 queries<br/>ClosedCase vectors<br/>+ 3 onboarded bank graphs")]
-    OA["☁ OpenAI API<br/>decisions · embeddings<br/>Ask Sentinel answers"]
-    OB["🧩 Bank onboarding — NEW<br/>any schema → canonical model<br/>propose · review · approve"]
-  end
-
-  P -- username + password --> SI --> CO
-  MC -- tool call --> MT --> BR
-  AF -- alert row --> RU --> VA
-  CO --> VA
-  BR -- GSQL reads --> TG
-  MG -- evidence bundle --> OA
-  WB -- FraudCase + edges, read back --> TG
-  WB -- every step --> LG
-  WB --> AFL
-  P -. logo button, every page .-> ASK
-  ASK -. allowed sources → cited answer .-> OA
-  ASK -. graph facts · vectors .-> TG
-  ASK -. every question .-> LG
-  ASK -. reads .-> UP
-  OB -. approved mapping .-> BR
-```
+![The system on one page](../img/medium-13-system-on-one-page.png)
 
 | Layer | What it holds |
 |---|---|

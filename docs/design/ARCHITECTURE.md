@@ -61,256 +61,41 @@ carries pseudonymous ids only.
 
 ### 2.1 Device ring → fraud, report filed, two approvals (HHG-014)
 
-```mermaid
-sequenceDiagram
-  autonumber
-  participant R as Alert & runner
-  participant D as Decision layer
-  participant G as TigerGraph
-  participant P as Policy & approvals
-  participant H as People
-  participant L as Audit ledger
-  R->>D: analyst_request · card C13487-K1 · txn 3478561
-  D->>G: ty_card_txns(C13487-K1, until 2016-11-22 20:11) → 73 rows
-  D->>G: ty_device_txns(D2c2006f554c8) → 80 rows
-  D->>D: shared_device_ring fires · 0.95 · 19 connected cards
-  D->>D: history cannot explain it (new device, anonymous proxy, new product)
-  D->>P: fraud 0.97 · undocumented · decided by typology
-  P->>H: ask the cardholder (simulated: does not recognise)
-  P->>P: BLOCK_CARD L1 · FILE_REPORT L2 · §3a
-  D->>G: CASE-HHG-014 + 25 edges · read back
-  H--xP: analyst tries to block — refused (L1)
-  H->>P: team lead approves BLOCK_CARD
-  H->>P: fraud manager approves FILE_REPORT
-  Note over L: every step above is a hash-chained entry (#681 … #869)
-```
+![HHG-014: device ring, fraud, report filed, two approvals](../img/medium-6-flow-device-ring.png)
 
 ### 2.2 Innocent look-alike → legitimate, never blocked (HHG-005)
 
-```mermaid
-sequenceDiagram
-  autonumber
-  participant R as Alert & runner
-  participant D as Decision layer
-  participant G as TigerGraph
-  participant P as Policy
-  R->>D: risk_score · card C02923-K1 · txn 3523199
-  D->>G: 10 queries: card history, devices, precedent
-  D->>D: no detector fires · new device + new e-mail, both weak
-  D->>P: legitimate 0.15 · rule R1 (one weak signal → verify, not block)
-  P->>P: CLOSE_NO_FRAUD · no block · no report
-  D->>G: CASE-HHG-005 · cites 6 prior cases · read back
-```
+![HHG-005: innocent look-alike, legitimate, never blocked](../img/medium-14-flow-lookalike.png)
 
 ### 2.3 Tricky case → model asked → uncertain, escalated (HHG-015)
 
-```mermaid
-sequenceDiagram
-  autonumber
-  participant D as Decision layer
-  participant G as TigerGraph
-  participant M as OpenAI decisions
-  participant P as Policy
-  D->>G: 14 queries + closed-case vectors
-  D->>D: amount explained by product + e-mail; device and region not
-  D->>M: evidence bundle, alert text quoted as untrusted
-  M-->>D: is_fraud 0.81 · history 0.05 · coordinated 0.12
-  D->>P: uncertain 0.69 (a single charge cannot be blocked on the model alone)
-  P->>P: ESCALATE_TO_ANALYST · MONITOR_CARD · no block
-```
+![HHG-015: tricky case, model asked, uncertain and escalated](../img/medium-3-follow-an-alert.png)
 
 ### 2.4 Graph unavailable → fail closed
 
-```mermaid
-sequenceDiagram
-  participant R as Runner
-  participant D as Decision layer
-  participant G as TigerGraph
-  participant L as Audit ledger
-  R->>D: alert
-  D->>G: ty_card_txns
-  G--xD: GraphUnavailable (workspace starting / network)
-  D->>L: case.failed · written: false
-  D->>R: exit 2 · no answer file · no graph write · no silent fallback to the mirror
-```
+![Graph unavailable: fail closed, nothing written](../img/medium-15-flow-graph-down.png)
 
 ### 2.5 Ask Sentinel: a question the role may not fully see
 
-```mermaid
-sequenceDiagram
-  autonumber
-  participant U as Analyst (raj)
-  participant A as Ask Sentinel
-  participant G as TigerGraph + stores
-  participant M as OpenAI
-  participant L as Audit ledger
-  U->>A: "Who failed to sign in, according to the access log?"
-  A->>A: build 114 sources · drop 4 the analyst may not see (audit.all) BEFORE ranking
-  A->>G: retrieve: ids + keywords + embeddings + closed-case vectors, fused by RRF (k = 60)
-  A->>A: scan question and sources for instruction-like text → passed as quoted data
-  A->>M: only the allowed sources, quoted; withheld permission named
-  M-->>A: answer with [S1]-style citations
-  A->>A: remove citations to sources not given; uncited → "unverified"; mask PII
-  A->>U: "not found in what you can see · your role lacks audit.all" + source links
-  A->>L: question (redacted), sources used, permissions that withheld others
-```
+![Ask Sentinel: a question the role may not fully see](../img/medium-7-flow-ask-sentinel.png)
 
 ### 2.6 Onboarding a new bank (Temenos T24)
 
-```mermaid
-sequenceDiagram
-  autonumber
-  participant B as Bank schema (.gsql)
-  participant O as Onboarding
-  participant M as OpenAI
-  participant R as Reviewer
-  participant T as Team lead
-  participant G as Bank's TigerGraph graph
-  participant D as Same detectors
-  B->>O: 11 vertex types, 18 edges, T24 names
-  O->>M: schema STRUCTURE only (never its comments) + canonical model
-  M-->>O: proposed mapping
-  O->>O: validate every vertex / attribute / edge / path; send problems back (≤ 2 repairs)
-  O->>R: needs review: code tables, filter values
-  R->>O: 8 changes with reasons (DATE_TIME is YYMMDDHHMM; OT/AC online; SIGN.ON)
-  T->>O: signed approval bound to the mapping's SHA-256
-  O->>O: capabilities: 7 of 10 detectors (no transfer→terminal link)
-  D->>G: generic adapter, built-in REST endpoints only
-  G-->>D: 21 real transactions (no ledger postings)
-  D->>D: structuring fires · FT26000102–104 · 2 sibling accounts
-```
+![Onboarding a Temenos T24 bank](../img/medium-8-flow-onboarding.png)
 
 ---
 
 ## 3. Low-level design: classes
 
-```mermaid
-classDiagram
-  direction LR
-  class Txn {
-    <<dataclass>>
-    txn_id · card_id · customer_id
-    ts: datetime · amt: float
-    channel · product · addr1
-    device_key · proxy · r_email
-    online() bool · anon_proxy() bool
-  }
-  class TxnSource {
-    <<protocol>>
-    card_txns(card, until)
-    txns_by_device(dk, since, until)
-    txns_by_recipient(r, since, until)
-    txns_in_band(lo, hi, since, until)
-    device_card_count(dk, until)
-  }
-  class TigerGraphTxnSource {
-    prefetch_devices() · proxy_component()
-    device_fraud_history() · prior_cases()
-    vector: VectorPrecedent
-  }
-  class DuckTxnSource {
-    lab mirror · label mirror
-  }
-  class MappedTxnSource {
-    <<onboarding · new>>
-    schema · mapping · reader
-    string_ids = True
-  }
-  class GraphReader {
-    <<protocol>>
-    vertex() · neighbors() · scan()
-  }
-  class VectorPrecedent {
-    search() · fuse() RRF k=60
-  }
-  class TypologyHit {
-    key · pattern · txn_ids · connected_card_ids · strength
-  }
-  class DETECTORS {
-    <<registry · 8>>
-    detect(card, txns, src, as_of) TypologyHit
-  }
-  class decide {
-    <<orchestrator>>
-    rules → model gate → Decision
-  }
-  class Adjudication {
-    POST /v1/decisions · 5 predicates · fail closed
-  }
-  class Decision {
-    verdict · fraud_probability · decided_by · adjudication
-  }
-  class PolicyEngine {
-    evaluate(CaseState) → actions, SAR
-  }
-  class build_answer {
-    CaseState ×2 · SAR citations · containment
-  }
-  class AnswerFile {
-    <<pydantic>>
-    validators
-  }
-  class Ledger {
-    append() · verify() · redact()
-  }
-  class Assistant {
-    <<Ask Sentinel · new>>
-    ask(question, role, user) · Source.visible_to · check_citations
-  }
-  class Mapping {
-    <<onboarding · new>>
-    validate(schema) · approved() · capabilities()
-  }
-
-  TigerGraphTxnSource ..|> TxnSource
-  DuckTxnSource ..|> TxnSource
-  MappedTxnSource ..|> TxnSource
-  MappedTxnSource --> GraphReader : reads via
-  MappedTxnSource --> Mapping : driven by
-  TxnSource --> Txn : returns
-  TigerGraphTxnSource --> VectorPrecedent : has
-  DETECTORS --> TypologyHit : produce
-  decide --> DETECTORS : runs
-  decide --> TxnSource : reads
-  decide --> Adjudication : tricky cases
-  decide --> Decision : returns
-  Decision --> build_answer : input
-  build_answer --> PolicyEngine : evaluates ×2
-  build_answer --> AnswerFile : validates
-  Assistant --> Ledger : every question
-  Assistant --> VectorPrecedent : precedent
-```
+![Classes and how they connect](../img/medium-9-class-diagram.png)
 
 ---
 
 ## 4. Deployment
 
-```mermaid
-flowchart LR
-  subgraph NET["Bank network · on-premises or private cloud"]
-    WEB["Console :3000 (Next.js)<br/>/login · console · /regulator<br/>proxies /api and /v2"]
-    API["Console API :8000"]
-    V2["v2 service :8100<br/>sessions · approvals · Ask Sentinel"]
-    RUN["Runner<br/>python -m sentinel.typologies.run"]
-    MCP["MCP server · stdio"]
-    SEC["Secrets · .env (git-ignored)"]
-    VAR["var/: users.json (hashes) · uploads per user"]
-    RD["Run directory: cases/ · audit/ledger.jsonl · run_log.csv"]
-    LAB["Lab mirror · data/lab.duckdb"]
-  end
-  TG[("TigerGraph Savanna 4.x<br/>GRAPH_GOA + onboarded banks")]
-  OA["OpenAI API"]
-  GH["GitHub · sentinel-v2 (frozen commit)"]
-  SNAP["Regulator snapshot (read-only HTML)"]
-  WEB --> API & V2
-  API -- HTTPS · GSQL --> TG
-  V2 --> TG
-  RUN --> TG
-  RUN -- tricky cases --> OA
-  V2 -- Ask Sentinel --> OA
-  GH -. clone .-> NET
-  RD -. export .-> SNAP
-```
+![Deployment](../img/medium-2-deployment.png)
+
+![Run modes](../img/medium-10-deployment-run-modes.png)
 
 | Mode | How it starts | Reads from | Writes | Used for |
 |---|---|---|---|---|
