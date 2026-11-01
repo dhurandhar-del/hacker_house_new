@@ -67,6 +67,44 @@ A five-minute tour:
 5. **As `examiner.ines`:** walk an investigation step by step, check the approval chain, and press *Re-verify chain*
    to recompute every hash in your own browser.
 
+### Screenshots
+
+Captured from a live run of the current build.
+
+**Fraud manager (`manager.anika`)** — the case console: queue, HHG-014's probability trajectory with every finding
+cited to its GSQL query, the case graph and the next best action. *Regulator overview* appears in the masthead only
+for roles that may see it.
+
+![Fraud manager: case console on HHG-014](docs/img/demo-01-manager-console-HHG-014.png)
+
+**Ask Sentinel, as the fraud manager** — all 8 kinds of record in scope; the answer cites HHG-014's audit trail;
+116 sources searched, 0 withheld by role.
+
+![Ask Sentinel signed in as the fraud manager](docs/img/demo-03-manager-ask-sentinel.png)
+
+**The approval inbox** — L1 and L2 actions wait here for a person; the server checks the role on every decision.
+
+![Approval inbox](docs/img/demo-02-manager-approvals.png)
+
+**Regulator (`examiner.ines`)** — the read-only Examiner Register: every investigation, approvals awaiting a person,
+refused attempts.
+
+![Regulator: Examiner Register](docs/img/demo-04-regulator-overview.png)
+
+**Re-verify the chain in the browser** — every hash in the audit ledger recomputed by the examiner's own browser,
+without trusting the server.
+
+![Hash chain re-verified in the browser](docs/img/demo-05-regulator-chain-verified.png)
+
+**One investigation, step by step** — the alert, what Sentinel looked at, what it found, what it decided.
+
+![Examiner walkthrough of one investigation](docs/img/demo-06-regulator-investigation.png)
+
+**Ask Sentinel, as the regulator** — 7 of 8 kinds of record in scope; the one the role may not see is withheld before
+ranking and never reaches the model.
+
+![Ask Sentinel signed in as the regulator](docs/img/demo-07-regulator-ask-sentinel.png)
+
 ---
 
 ## What is in it
@@ -187,7 +225,28 @@ model only scores what the rules cannot settle, and a person approves every bloc
 | TigerGraph Savanna 4.x | — | `GRAPH_GOA` (650,938 transactions July 2016 – January 2017, 5,585 closed cases with vectors, 36 installed GSQL queries) plus each onboarded bank's own graph |
 | OpenAI | — | the decision model (tricky cases only), embeddings, Ask Sentinel's cited answers; pseudonymous ids only |
 
-The full design, with the system map, six data-flow walkthroughs, the class diagram, deployment and the pillars:
+![The system on one page: people and inputs, the decision layer inside the bank boundary, TigerGraph and OpenAI outside it; Ask Sentinel and bank onboarding are new](docs/img/medium-13-system-on-one-page.png)
+
+**An alert, step by step** — HHG-014, a device ring: the detector fires, the policy engine asks for a block and a
+report, an analyst is refused, a team lead and a fraud manager approve, and every step is an audit entry.
+
+![Following HHG-014 through the system](docs/img/medium-6-flow-device-ring.png)
+
+**Ask Sentinel, step by step** — entitlement first, retrieval over graph facts, vectors and keywords, untrusted text
+as data, the answer model, the citation check, a cited answer, an audit entry.
+
+![Ask Sentinel's data flow](docs/img/medium-7-flow-ask-sentinel.png)
+
+**Onboarding a new bank** — a Temenos T24 schema: propose, validate, review, approve, then the unchanged detectors
+find the structuring burst in the bank's own graph.
+
+![Onboarding a T24 bank](docs/img/medium-8-flow-onboarding.png)
+
+**Classes and how they connect**
+
+![Class diagram](docs/img/medium-9-class-diagram.png)
+
+The full design, with all six data-flow walkthroughs, deployment, run modes and the pillars:
 **[docs/design/ARCHITECTURE.md](docs/design/ARCHITECTURE.md)**. Interactive version:
 [system map](https://claude.ai/artifact/JYEWEZyCDC1yXwjtYhPzCC) ·
 [full design](https://claude.ai/artifact/Em7gXScLV88xp8QYwcu9aL).
