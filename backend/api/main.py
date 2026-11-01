@@ -49,8 +49,10 @@ logger = logging.getLogger(__name__)
 
 #: Mounted under this, so a controller's ``/cases`` is ``/api/cases``.
 API_PREFIX = "/api"
-#: Answered without an identity: liveness, and the build/meta the sign-in page may show.
-OPEN_PATHS = frozenset({"/api/health", "/api/meta"})
+#: Answered without an identity: liveness, the build/meta the sign-in page may show,
+#: and the API documentation (the docs describe endpoints; every endpoint still
+#: requires sign-in).
+OPEN_PATHS = frozenset({"/api/health", "/api/meta", "/api/docs", "/api/openapi.json"})
 
 #: Every controller, in mount order. Static paths before parameterised ones so
 #: ``/api/benchmark/report`` can never be matched as somebody's ``{case_id}``.
