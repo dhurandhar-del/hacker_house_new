@@ -50,10 +50,11 @@ from api.services import (
 from api.sse import EventJournal, JournalingEventEmitter, SseBroker
 from api.store import Database
 from api.store.traces import TraceArchive
-from sentinel.agents.orchestrator import InvestigationOrchestrator, SentinelOrchestrator
+from api_v2 import rundir
+from sentinel.agents.orchestrator import InvestigationOrchestrator
+from sentinel.typologies.console import FinalDecisionOrchestrator
 from sentinel.config.settings import Settings
 from sentinel.domain.alert import Alert
-from sentinel.evidence.table import EvidenceLikelihoodTable
 from sentinel.graph.repository import GraphRepository
 from sentinel.graph.tigergraph import TigerGraphRestRepository
 from sentinel.llm.client import LlmClient
@@ -202,15 +203,6 @@ class Container:
         embeddings = EmbeddingService(settings=settings, meter=llm.meter)
         memory = CaseMemoryStore(graph=graph, embeddings=embeddings)
         retriever = GraphRagRetriever(settings=settings, graph=graph, embeddings=embeddings)
-        orchestrator = SentinelOrchestrator(
-            settings=settings,
-            repository=graph,
-            llm=llm,
-            table=EvidenceLikelihoodTable(settings.elt_path),
-            memory=memory,
-            retriever=retriever,
-        )
-
         db = Database.from_settings(settings)
         await db.create_all()
         container = cls.assemble(
@@ -218,7 +210,9 @@ class Container:
             graph=graph,
             db=db,
             memory=memory,
-            orchestrators={RunMode.LIVE: orchestrator},
+            # The Run button investigates on the final decision engine, the one the regulator
+            # view records. Case memory and recall keep serving the case file.
+            orchestrators={RunMode.LIVE: FinalDecisionOrchestrator(rundir.resolve())},
             llm=llm,
             retriever=retriever,
             checker=GraphIdentityChecker(graph),

@@ -20,7 +20,6 @@ it was merely getting ready.
 from __future__ import annotations
 
 import logging
-import shutil
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
@@ -60,28 +59,59 @@ OPEN_PATHS = frozenset({"/api/health", "/api/meta", "/api/docs", "/api/openapi.j
 ALL_CONTROLLERS = (*CONTROLLERS, AuditController)
 
 
-#: The latest recorded run of each benchmark case, committed so a fresh deployment's console
-#: shows every case's timeline and probability trajectory (runs/ itself is not in git).
-DEMO_RUNS = Path(__file__).resolve().parents[2] / "demo" / "runs"
+#: Where the console's timelines of the final decision engine are written, inside runs_dir.
+FINAL_RUN_ID = "run_final_decision"
 
 
-def _seed_demo_traces(runs_dir: Path) -> int:
-    """Copy in demo traces for cases this deployment has no trace of. Never overwrites a run it made itself."""
-    if not DEMO_RUNS.is_dir():
+def _final_settings(settings: Settings) -> Settings:
+    """The console reads the final decision engine's answers: the same files the regulator view
+    reads, in the v2 service's run directory. ``CASES_DIR`` still wins when it is set."""
+    import os
+
+    from api_v2 import rundir
+
+    if os.getenv("CASES_DIR"):
+        return settings
+    return settings.model_copy(update={"cases_dir": rundir.resolve() / "cases"})
+
+
+def _export_final_traces(runs_dir: Path, cases_dir: Path) -> int:
+    """Write each answered case's timeline from the hash-chained ledger beside its answers.
+
+    Regenerated on every start, so the console's timeline, trajectory and verdict are always
+    the regulator view's for the same case. Only ``runs/run_final_decision`` is written; runs
+    the console made itself are left alone.
+    """
+    import json
+
+    from sentinel.typologies.console import events_from_ledger, latest_run
+
+    ledger_path = Path(cases_dir).parent / "audit" / "ledger.jsonl"
+    if not ledger_path.is_file():
         return 0
-    have = {p.stem for p in Path(runs_dir).glob("*/trace/*.jsonl")}
-    copied = 0
-    for src in DEMO_RUNS.glob("*/trace/*.jsonl"):
-        if src.stem in have:
-            continue
-        dst = Path(runs_dir) / src.parent.parent.name / "trace" / src.name
+    by_case: dict[str, list[dict]] = {}
+    with ledger_path.open(encoding="utf8") as fh:
+        for line in fh:
+            if line.strip():
+                e = json.loads(line)
+                by_case.setdefault(e["case_id"], []).append(e)
+    traces = Path(runs_dir) / FINAL_RUN_ID / "trace"
+    written = 0
+    for path in sorted(Path(cases_dir).glob("*.json")):
         try:
-            dst.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(src, dst)
-            copied += 1
-        except OSError as exc:  # a read-only runs dir must not stop the API from starting
-            logger.warning("could not seed demo trace %s: %s", src.name, exc)
-    return copied
+            answer = json.loads(path.read_text(encoding="utf8"))
+            entries = latest_run(by_case.get(answer["case_id"], []))
+            if not entries:
+                continue
+            events = events_from_ledger(entries, answer)
+            traces.mkdir(parents=True, exist_ok=True)
+            with (traces / f"{answer['case_id']}.jsonl").open("w", encoding="utf8") as out:
+                for seq, (kind, payload, step) in enumerate(events):
+                    out.write(json.dumps({"seq": seq, "type": kind, "step": step, "payload": payload}) + "\n")
+            written += 1
+        except (OSError, ValueError, KeyError) as exc:  # one bad record must not stop the API from starting
+            logger.warning("could not export the timeline of %s: %s", path.name, exc)
+    return written
 
 
 def create_app(settings: Settings | None = None, *, container: Container | None = None) -> FastAPI:
@@ -92,14 +122,14 @@ def create_app(settings: Settings | None = None, *, container: Container | None 
     its own. Nothing else about the app changes, so the thing under test is
     the thing that ships.
     """
-    resolved = settings or get_settings()
+    resolved = settings or _final_settings(get_settings())
     handle = ContainerHandle()
 
     @asynccontextmanager
     async def lifespan(_: FastAPI) -> AsyncIterator[None]:
-        seeded = _seed_demo_traces(resolved.runs_dir)
-        if seeded:
-            logger.info("seeded %d demo case trace(s) into %s", seeded, resolved.runs_dir)
+        exported = _export_final_traces(resolved.runs_dir, resolved.cases_dir)
+        if exported:
+            logger.info("exported %d case timeline(s) from the audit ledger into %s", exported, resolved.runs_dir)
         owned = container is None
         built = container or await Container.build(resolved)
         handle.set(built)

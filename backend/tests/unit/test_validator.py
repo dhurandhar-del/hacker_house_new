@@ -21,7 +21,7 @@ import pytest
 from sentinel.validation.validator import AnswerValidator
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
-GOLDEN = REPO_ROOT / "cases" / "HHG-003.json"
+GOLDEN = Path(__file__).resolve().parents[1] / "fixtures" / "round1_cases" / "HHG-003.json"
 
 
 @pytest.fixture(scope="module")

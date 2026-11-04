@@ -53,5 +53,3 @@ updated_dataset/
 .run/
 regulator_snapshot.html
 
-# Demo traces shipped so a deployment shows every case timeline (see backend/api/main.py)
-!demo/runs/

@@ -46,7 +46,7 @@ from sentinel.domain.enums import (
 )
 
 ROOT = Path(__file__).resolve().parents[3]
-GOLDEN = ROOT / "cases" / "HHG-003.json"
+GOLDEN = Path(__file__).resolve().parents[1] / "fixtures" / "round1_cases" / "HHG-003.json"
 CASE_PACK = ROOT / "case_pack.csv"
 STAGED_ALERTS = ROOT / "data" / "staging" / "alerts.csv"
 

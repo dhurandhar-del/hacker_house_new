@@ -110,11 +110,9 @@ cmd_start() {
   preflight
   say "Starting services"
   start_one v2  "$V2_PORT"  "$ROOT/backend" "$PY" -m uvicorn api_v2.app:app --host 127.0.0.1 --port "$V2_PORT"
-  # The console re-runs cases and rewrites their answers. Give it a working copy, so the committed
-  # Round 1 deliverables in cases/ are never touched by a click in the console.
-  local console_cases="$ROOT/backend/var/console_cases"
-  if [[ ! -d "$console_cases" ]]; then mkdir -p "$console_cases" && cp "$ROOT"/cases/*.json "$console_cases"/; fi
-  start_one api "$API_PORT" "$ROOT"         env CASES_DIR="$console_cases" \
+  # The console reads and writes the final decision engine's answers, the same files the
+  # regulator view reads; cases/ holds a committed copy of the same twenty answers.
+  start_one api "$API_PORT" "$ROOT"         env -u CASES_DIR \
     "$PY" -m uvicorn api.main:app --app-dir backend --host 127.0.0.1 --port "$API_PORT"
   start_one web "$WEB_PORT" "$ROOT/frontend" env SENTINEL_API_BASE="http://127.0.0.1:$API_PORT" \
     SENTINEL_V2_BASE="http://127.0.0.1:$V2_PORT" npx next dev -p "$WEB_PORT"

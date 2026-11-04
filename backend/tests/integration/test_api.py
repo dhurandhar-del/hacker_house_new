@@ -15,6 +15,7 @@ M7's exit test, minus the browser.
 from __future__ import annotations
 
 import json
+import shutil
 from collections.abc import AsyncIterator
 from pathlib import Path
 
@@ -72,6 +73,16 @@ class StubOrchestrator(InvestigationOrchestrator):
         )
 
 
+ROUND1_CASES = Path(__file__).resolve().parents[1] / "fixtures" / "round1_cases"
+
+
+def _scratch_cases(tmp_path: Path) -> Path:
+    out = tmp_path / "cases"
+    if not out.is_dir():
+        shutil.copytree(ROUND1_CASES, out)
+    return out
+
+
 def settings_for(tmp_path: Path) -> Settings:
     """Real paths for the case pack and the answers, a scratch database."""
     return Settings(
@@ -81,7 +92,8 @@ def settings_for(tmp_path: Path) -> Settings:
         openai_model="stub",
         openai_embedding_model="stub",
         root=ROOT,
-        cases_dir=ROOT / "cases",
+        # A scratch copy of the Round 1 answers: a run rewrites its case's answer file.
+        cases_dir=_scratch_cases(tmp_path),
         case_pack_path=ROOT / "case_pack.csv",
         db_url=f"sqlite+aiosqlite:///{tmp_path / 'test.db'}",
     )
@@ -90,7 +102,7 @@ def settings_for(tmp_path: Path) -> Settings:
 @pytest.fixture
 async def client(tmp_path: Path) -> AsyncIterator[httpx.AsyncClient]:
     settings = settings_for(tmp_path)
-    answer = AnswerFile.model_validate_json((settings.cases_dir / f"{CASE}.json").read_text())
+    answer = AnswerFile.model_validate_json((settings.cases_dir / f"{CASE}.json").read_text(encoding="utf-8"))
     graph = FakeGraphRepository()
     database = Database(settings.db_url)
     container = Container.assemble(
@@ -166,7 +178,7 @@ async def test_a_case_that_is_not_in_the_pack_is_a_404(client: httpx.AsyncClient
 
 async def test_the_answer_is_served_verbatim(client: httpx.AsyncClient):
     served = (await client.get(f"/api/cases/{CASE}/answer")).json()
-    on_disk = json.loads((ROOT / "cases" / f"{CASE}.json").read_text())
+    on_disk = json.loads((ROUND1_CASES / f"{CASE}.json").read_text(encoding="utf-8"))
     assert served == on_disk
 
 

@@ -1,273 +1,102 @@
 {
-  "case_id": "HHG-019",
-  "case": {
-    "status": "closed_fraud",
-    "verdict": "fraud",
-    "fraud_probability": 0.8824,
-    "pattern": "card_not_present_new_device",
-    "pattern_description": "",
-    "affected_txn_ids": [
-      "3503878"
-    ],
-    "first_suspicious_txn_id": "3503878",
-    "connected_card_ids": [],
-    "connected_device_profiles": [],
-    "exposure_usd": 99.92,
-    "evidence": [
-      {
-        "claim": "The bank's model scored this transaction 0.90, in its highest band.",
-        "source": "graph",
-        "ref": "query:txn_detail(txn_id=3503878)",
-        "entity_ids": [
-          "3503878"
-        ]
-      },
-      {
-        "claim": "The purchase was made online, without the card present.",
-        "source": "graph",
-        "ref": "query:txn_detail(txn_id=3503878)",
-        "entity_ids": [
-          "3503878"
-        ]
-      },
-      {
-        "claim": "The amount is $99.92, under the $500 band.",
-        "source": "graph",
-        "ref": "query:txn_detail(txn_id=3503878)",
-        "entity_ids": [
-          "3503878"
-        ]
-      },
-      {
-        "claim": "The amount is $99.92, not the sub-$5 size a probe authorisation uses.",
-        "source": "graph",
-        "ref": "query:txn_detail(txn_id=3503878)",
-        "entity_ids": [
-          "3503878"
-        ]
-      },
-      {
-        "claim": "The billing country is the cardholder's home country.",
-        "source": "graph",
-        "ref": "query:txn_detail(txn_id=3503878)",
-        "entity_ids": [
-          "3503878"
-        ]
-      },
-      {
-        "claim": "Every one of the card's unnamed match flags (M1-M9) is true.",
-        "source": "graph",
-        "ref": "query:txn_detail(txn_id=3503878)",
-        "entity_ids": [
-          "3503878"
-        ]
-      },
-      {
-        "claim": "The transaction carries no distance value (an unnamed Vesta field).",
-        "source": "graph",
-        "ref": "query:txn_detail(txn_id=3503878)",
-        "entity_ids": [
-          "3503878"
-        ]
-      },
-      {
-        "claim": "The identity record marks this device as new for the account.",
-        "source": "graph",
-        "ref": "query:device_novelty(txn_id=3503878)",
-        "entity_ids": [
-          "3503878",
-          "Df194716e2447"
-        ]
-      },
-      {
-        "claim": "The identity record does not carry the 'Found' device state.",
-        "source": "graph",
-        "ref": "query:device_novelty(txn_id=3503878)",
-        "entity_ids": [
-          "3503878",
-          "Df194716e2447"
-        ]
-      },
-      {
-        "claim": "No proxy was recorded on the connection.",
-        "source": "graph",
-        "ref": "query:device_novelty(txn_id=3503878)",
-        "entity_ids": [
-          "3503878",
-          "Df194716e2447"
-        ]
-      },
-      {
-        "claim": "This card has never been used on this device before.",
-        "source": "graph",
-        "ref": "query:device_novelty(txn_id=3503878)",
-        "entity_ids": [
-          "3503878",
-          "Df194716e2447"
-        ]
-      },
-      {
-        "claim": "An identity match check failed on this transaction (id_34, an unnamed Vesta field).",
-        "source": "graph",
-        "ref": "query:device_novelty(txn_id=3503878)",
-        "entity_ids": [
-          "3503878",
-          "Df194716e2447"
-        ]
-      },
-      {
-        "claim": "The card has prior history.",
-        "source": "graph",
-        "ref": "query:region_novelty(card_id=C07987-K2, region=264.0, as_of=2016-12-01 17:28:53)",
-        "entity_ids": [
-          "C07987-K2",
-          "264.0"
-        ]
-      },
-      {
-        "claim": "The card had 5 prior transactions in billing region 264.0.",
-        "source": "graph",
-        "ref": "query:region_novelty(card_id=C07987-K2, region=264.0, as_of=2016-12-01 17:28:53)",
-        "entity_ids": [
-          "C07987-K2",
-          "264.0"
-        ]
-      },
-      {
-        "claim": "The card has only 5 prior transactions in billing region 264.0.",
-        "source": "graph",
-        "ref": "query:region_novelty(card_id=C07987-K2, region=264.0, as_of=2016-12-01 17:28:53)",
-        "entity_ids": [
-          "C07987-K2",
-          "264.0"
-        ]
-      },
-      {
-        "claim": "No card-present activity in another billing region within a day.",
-        "source": "graph",
-        "ref": "query:region_novelty(card_id=C07987-K2, region=264.0, as_of=2016-12-01 17:28:53)",
-        "entity_ids": [
-          "C07987-K2",
-          "264.0"
-        ]
-      },
-      {
-        "claim": "The card has 13 prior purchases of product code R.",
-        "source": "graph",
-        "ref": "query:product_novelty(card_id=C07987-K2, product=R, as_of=2016-12-01 17:28:53)",
-        "entity_ids": [
-          "C07987-K2"
-        ]
-      },
-      {
-        "claim": "The previous transaction was 40.4 hours earlier.",
-        "source": "graph",
-        "ref": "query:txn_sequence_context(txn_id=3503878)",
-        "entity_ids": [
-          "3503878"
-        ]
-      },
-      {
-        "claim": "The previous transaction was more than ten minutes earlier.",
-        "source": "graph",
-        "ref": "query:txn_sequence_context(txn_id=3503878)",
-        "entity_ids": [
-          "3503878"
-        ]
-      },
-      {
-        "claim": "11 prior charges on this card fall within $0.50 of $99.92.",
-        "source": "graph",
-        "ref": "query:amount_band_probe(card_id=C07987-K2, amt=99.92, tol=0.5, as_of=2016-12-01 17:28:53)",
-        "entity_ids": [
-          "C07987-K2"
-        ]
-      },
-      {
-        "claim": "$99.92 is below this card's own prior mean of $194.01.",
-        "source": "graph",
-        "ref": "query:amount_band_probe(card_id=C07987-K2, amt=99.92, tol=0.5, as_of=2016-12-01 17:28:53)",
-        "entity_ids": [
-          "C07987-K2"
-        ]
-      },
-      {
-        "claim": "$99.92 is within two standard deviations of this card's prior mean ($626.23).",
-        "source": "graph",
-        "ref": "query:amount_band_probe(card_id=C07987-K2, amt=99.92, tol=0.5, as_of=2016-12-01 17:28:53)",
-        "entity_ids": [
-          "C07987-K2"
-        ]
-      },
-      {
-        "claim": "Fraud Policy §3a. A case is not a report — applied here because 3a: no report. exposure $99.92 is at or below $1,000; the activity connects to no shared device profile, region cluster or other customer's fraud.",
-        "source": "document",
-        "ref": "doc:POL-3A#3a",
-        "entity_ids": [
-          "POL-3A"
-        ]
-      }
-    ],
-    "similar_prior_cases": [
-      "CC-2011",
-      "CC-4437",
-      "CC-5026",
-      "CC-5129",
-      "CC-1083",
-      "CC-2087"
-    ],
-    "summary": "This is an online card-not-present transaction on a device marked new for the account, with no proxy recorded and an identity match check that failed. The card has never been used on this device before, and every one of the card's unnamed match flags is true, which pushes the evidence toward fraud. At the same time, the amount is not a sub-$5 probe, the billing country is the cardholder's home country, and the card has prior history and prior purchases of product code R, so this is not a card-testing or out-of-region pattern. The evidence most strongly fits card-not-present fraud from a new device rather than a confirmed legitimate purchase.",
-    "written_to_graph": true,
-    "graph_case_id": "CASE-HHG-019"
-  },
-  "evidence_requests": [],
-  "next_best_actions": {
-    "initial": [
-      {
-        "action": "CREATE_CASE",
-        "route": "auto",
-        "reason": "3a: a case is opened once fraud probability reaches 0.30 (assessed 0.88) or evidence has been requested"
-      },
-      {
-        "action": "VERIFY_WITH_CUSTOMER",
-        "route": "auto",
-        "reason": "the evidence puts this at 0.88 and the cardholder has not been asked; R2 and R3 both turn on their answer"
-      },
-      {
-        "action": "MONITOR_CARD",
-        "route": "auto",
-        "reason": "raise sensitivity while the cardholder is asked, at assessed probability 0.88"
-      }
-    ],
-    "final": [
-      {
-        "action": "CREATE_CASE",
-        "route": "auto",
-        "reason": "3a: a case is opened once fraud probability reaches 0.30 (assessed 0.88) or evidence has been requested"
-      },
-      {
-        "action": "VERIFY_WITH_CUSTOMER",
-        "route": "auto",
-        "reason": "the evidence puts this at 0.88 and the cardholder has not been asked; R2 and R3 both turn on their answer"
-      },
-      {
-        "action": "MONITOR_CARD",
-        "route": "auto",
-        "reason": "raise sensitivity while the cardholder is asked, at assessed probability 0.88"
-      }
-    ],
-    "what_changed": "nothing"
-  },
-  "sar": {
-    "file": false,
-    "reason": "3a: no report. exposure $99.92 is at or below $1,000; the activity connects to no shared device profile, region cluster or other customer's fraud.",
-    "narrative": "",
-    "subjects": [],
-    "total_amount_usd": 0.0,
-    "activity_dates": []
-  },
-  "stop_reason": "Policy 6: probability 0.88 is at or above 0.85 with 5 independent pieces of evidence.",
-  "tool_calls": 14,
-  "tokens": 7435,
-  "latency_s": 15.4
+ "case_id": "HHG-019",
+ "case": {
+  "status": "escalated",
+  "verdict": "uncertain",
+  "fraud_probability": 0.45,
+  "pattern": "none",
+  "pattern_description": "",
+  "affected_txn_ids": [
+   "3503878"
+  ],
+  "first_suspicious_txn_id": "3503878",
+  "connected_card_ids": [],
+  "connected_device_profiles": [],
+  "exposure_usd": 99.92,
+  "evidence": [
+   {
+    "claim": "Not explained by the card's history — device_new: device Df194716e2447 not seen on this card before.",
+    "source": "graph",
+    "ref": "anomalies(card_id=C07987-K2, as_of=2016-12-01 22:28:53) on TigerGraph GRAPH_GOA (v3 queries ty_*)",
+    "entity_ids": [
+     "3503878"
+    ]
+   },
+   {
+    "claim": "Decision model (gpt-6-luna) assessed uncertain at 0.45: P(fraud)=0.45, P(history explains)=0.01, P(coordinated)=0.00, P(evidence conflicts)=0.21",
+    "source": "external",
+    "ref": "adjudicator(model=gpt-6-luna, case=HHG-019)",
+    "entity_ids": [
+     "3503878"
+    ]
+   }
+  ],
+  "similar_prior_cases": [
+   "CC-5026",
+   "CC-0986",
+   "CC-2860",
+   "CC-0534",
+   "CC-2087",
+   "CC-2455"
+  ],
+  "summary": "Uncertain and escalated: decision model below the fraud floor; verify before acting (R1); P(fraud)=0.45, P(history explains)=0.01, P(coordinated)=0.00, P(evidence conflicts)=0.21",
+  "written_to_graph": true,
+  "graph_case_id": "CASE-HHG-019"
+ },
+ "evidence_requests": [
+  {
+   "type": "customer_validation",
+   "asked_after_step": 6,
+   "assumed_response": "Assumed: no reply from the cardholder within 24 hours. The evidence supports both readings, so no answer is assumed."
+  }
+ ],
+ "next_best_actions": {
+  "initial": [
+   {
+    "action": "VERIFY_WITH_CUSTOMER",
+    "route": "auto",
+    "reason": "R1: the case rests on a single signal and assessed probability 0.45 is below 0.70, so verify before any block"
+   },
+   {
+    "action": "CREATE_CASE",
+    "route": "auto",
+    "reason": "3a: a case is opened once fraud probability reaches 0.30 (assessed 0.45) or evidence has been requested"
+   },
+   {
+    "action": "ESCALATE_TO_ANALYST",
+    "route": "auto",
+    "reason": "R8: verdict is uncertain and the evidence conflicts"
+   }
+  ],
+  "final": [
+   {
+    "action": "MONITOR_CARD",
+    "route": "auto",
+    "reason": "R4: no reply within 24 hours"
+   },
+   {
+    "action": "CREATE_CASE",
+    "route": "auto",
+    "reason": "3a: a case is opened once fraud probability reaches 0.30 (assessed 0.45) or evidence has been requested"
+   },
+   {
+    "action": "ESCALATE_TO_ANALYST",
+    "route": "auto",
+    "reason": "R8: verdict is uncertain and the evidence conflicts"
+   }
+  ],
+  "what_changed": "after the evidence request (assumed reply: no_reply), the recommendation moved from ['VERIFY_WITH_CUSTOMER', 'CREATE_CASE', 'ESCALATE_TO_ANALYST'] to ['MONITOR_CARD', 'CREATE_CASE', 'ESCALATE_TO_ANALYST']"
+ },
+ "sar": {
+  "file": false,
+  "reason": "3a: no report. fraud is neither confirmed nor strongly suspected (probability 0.45); exposure $99.92 is at or below $1,000; the activity connects to no shared device profile, region cluster or other customer's fraud.",
+  "narrative": "",
+  "subjects": [],
+  "total_amount_usd": 0.0,
+  "activity_dates": []
+ },
+ "stop_reason": "Stopped once the decision was uncertain (model); 3a: no report. fraud is neither confirmed nor strongly suspected (probability 0.45); exposure $99.92 is at or below $1,000; the activity connects to no shared device profile, region cluster or other customer's fraud.",
+ "tool_calls": 12,
+ "tokens": 5034,
+ "latency_s": 8.66
 }
