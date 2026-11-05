@@ -131,12 +131,14 @@ function url(path: string, query?: Query): string {
 
 async function request<T>(
   path: string,
-  { query, method = "GET", body, role, idempotencyKey }: {
+  { query, method = "GET", body, role, idempotencyKey, timeoutMs }: {
     query?: Query;
     method?: "GET" | "POST";
     body?: unknown;
     role?: Role;
     idempotencyKey?: string;
+    /** Give up after this long, so a request sent while the API restarts fails and is retried rather than pending forever. */
+    timeoutMs?: number;
   } = {},
 ): Promise<T> {
   const headers: Record<string, string> = { "X-Sentinel-Role": role ?? DEFAULT_ROLE };
@@ -147,6 +149,7 @@ async function request<T>(
     method,
     headers,
     body: body === undefined ? undefined : JSON.stringify(body),
+    signal: timeoutMs ? AbortSignal.timeout(timeoutMs) : undefined,
   });
 
   if (response.status === 401 && typeof window !== "undefined") {
@@ -182,7 +185,7 @@ export const api = {
   memory: (id: string, role: Role) => request<MemoryBody>(`/api/cases/${id}/memory`, { role }),
   actions: (id: string, role: Role) => request<ActionPlan>(`/api/cases/${id}/actions`, { role }),
   canvas: (id: string, role: Role) =>
-    request<GraphCanvas>(`/api/graph/cases/${id}`, { role }),
+    request<GraphCanvas>(`/api/graph/cases/${id}`, { role, timeoutMs: 60_000 }),
   rings: (role: Role) => request<RingReport>("/api/graph/rings", { role }),
 
   startInvestigation: (caseId: string, role: Role) =>

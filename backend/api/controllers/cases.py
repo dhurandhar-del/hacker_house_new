@@ -184,17 +184,22 @@ class CasesController(ApiController):
 
     async def trace(self, case_id: str, run_id: str = "") -> TraceBody:
         self._alert(case_id)
+        settled = await self._settled_probability(case_id)
         resolved = run_id or await self._last_run_id(case_id)
         if resolved:
             events = await self.container.journal.since(resolved, 0)
-            if events:
+            # The last run journalled here is the answer's run only if it reached the answer's
+            # number; a run of the earlier agent, or one that failed, is not that record.
+            reached = next((e.payload.get("fraud_probability") for e in events if e.type == "verdict.reached"), None)
+            if events and (run_id or settled is None or (
+                    isinstance(reached, (int, float)) and abs(reached - settled) < 1e-9)):
                 return _trace_from(case_id, resolved, events)
         # Nothing in this process journalled it. The twenty graded answers were
         # produced by the batch runner, whose journal is on disk — replaying it
         # is what makes the investigation tab show the run that actually
         # happened rather than nothing at all.
         archived = self.container.traces.latest(
-            case_id, fraud_probability=await self._settled_probability(case_id)
+            case_id, fraud_probability=settled
         )
         if archived is None:
             raise not_found("trace for case", case_id)
@@ -367,7 +372,7 @@ class CasesController(ApiController):
             if events:
                 return events
         archived = self.container.traces.latest(
-            case_id, fraud_probability=await self._settled_probability(case_id)
+            case_id, fraud_probability=settled
         )
         return archived.events if archived is not None else []
 

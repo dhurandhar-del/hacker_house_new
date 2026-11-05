@@ -287,6 +287,25 @@ class _Recorder:
         return e
 
 
+def final_validator():
+    """The answer validator for the final engine's answers.
+
+    Every rule of ``AnswerValidator`` still blocks, except the Round 1 agent's two-to-six-sentence
+    summary rule: the final engine's summary is the rule that decided, in one sentence, so a short
+    summary is a warning there, not a defect in the answer."""
+    from sentinel.validation.validator import AnswerValidator
+
+    class FinalAnswerValidator(AnswerValidator):
+        def validate(self, answer: object):
+            report = super().validate(answer)
+            style = [f for f in report.errors if f.path == "case.summary"]
+            report.errors = [f for f in report.errors if f not in style]
+            report.warnings.extend(style)
+            return report
+
+    return FinalAnswerValidator()
+
+
 try:
     from sentinel.agents.orchestrator import InvestigationOrchestrator, InvestigationResult
 except ImportError:  # the typologies package runs without the Round 1 agent's dependencies
@@ -330,7 +349,6 @@ class FinalDecisionOrchestrator(InvestigationOrchestrator):  # type: ignore[misc
 
         from sentinel.domain.answer import AnswerFile
         from sentinel.typologies.audit import Ledger
-        from sentinel.validation.validator import AnswerValidator
 
         row = {"case_id": alert.alert_id, "opened_at": alert.opened_at.isoformat(sep=" ")
                if isinstance(alert.opened_at, datetime) else str(alert.opened_at),
@@ -356,10 +374,4 @@ class FinalDecisionOrchestrator(InvestigationOrchestrator):  # type: ignore[misc
             for kind, payload, step in events_from_ledger(recorded, ans):
                 emitter.emit(kind, payload, step)
         answer = AnswerFile.model_validate(ans)
-        report = AnswerValidator().validate(answer)
-        # The final engine's summary is the rule that decided, in one sentence; the Round 1 agent's
-        # two-to-six-sentence rule is a style check, not a defect in the answer.
-        style = [f for f in report.errors if f.path == "case.summary"]
-        report.errors = [f for f in report.errors if f not in style]
-        report.warnings.extend(style)
-        return InvestigationResult(answer=answer, validation=report, context=None)  # type: ignore[arg-type]
+        return InvestigationResult(answer=answer, validation=final_validator().validate(answer), context=None)  # type: ignore[arg-type]

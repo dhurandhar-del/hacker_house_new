@@ -147,7 +147,8 @@ class BenchmarkController(ApiController):
 def _score(cases: list[BenchmarkCase], answers: list[AnswerFile], total: int) -> BenchmarkReport:
     """The four ratios and their warnings, from ``BatchReport``'s own rules."""
     valid = [c for c in cases if c.ok]
-    n = len(valid) or 1
+    # The rates are over the answers they count, so every answer on disk is in both halves.
+    n = len(answers) or 1
     mix: dict[Verdict, int] = {}
     for case in valid:
         if case.verdict is not None:
@@ -171,7 +172,7 @@ def _score(cases: list[BenchmarkCase], answers: list[AnswerFile], total: int) ->
         warnings.append(f"block rate {block:.0%} exceeds the 50% ceiling")
     if sar > 0.20:
         warnings.append(f"SAR rate {sar:.0%} exceeds the 20% ceiling")
-    dominant = max(mix.values()) / n if mix else 0.0
+    dominant = max(mix.values()) / (len(valid) or 1) if mix else 0.0
     if dominant > 0.60:
         warnings.append(f"one verdict covers {dominant:.0%} of the pack; the mix is degenerate")
     if len(valid) < total:

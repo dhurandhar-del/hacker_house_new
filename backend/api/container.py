@@ -52,7 +52,7 @@ from api.store import Database
 from api.store.traces import TraceArchive
 from api_v2 import rundir
 from sentinel.agents.orchestrator import InvestigationOrchestrator
-from sentinel.typologies.console import FinalDecisionOrchestrator
+from sentinel.typologies.console import FinalDecisionOrchestrator, final_validator
 from sentinel.config.settings import Settings
 from sentinel.domain.alert import Alert
 from sentinel.graph.repository import GraphRepository
@@ -175,7 +175,8 @@ class Container:
     #: present, so asking for one it cannot serve is a 422 rather than a live
     #: run wearing a ``replay`` label.
     orchestrators: Mapping[RunMode, InvestigationOrchestrator]
-    validator: AnswerValidator = field(default_factory=AnswerValidator)
+    #: The console's answers are the final engine's, so they are checked by its validator.
+    validator: AnswerValidator = field(default_factory=final_validator)
     llm: LlmClient | None = None
     retriever: GraphRagRetriever | None = None
     #: Absent against a fake graph: proving twenty ids exist needs the real one.
